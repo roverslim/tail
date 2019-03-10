@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "parse_arguments.h"
 #include "tail_n.h"
 
 int
-main(void) {
+main(int argc, char **argv) {
+    struct arguments *args;
+
+    args = parse_arguments(argc, argv);
+
     FILE* fp = fopen("sample-file.txt", "r");
     if(!fp) {
         perror("File opening failed");

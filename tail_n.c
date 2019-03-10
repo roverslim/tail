@@ -8,7 +8,6 @@ enum {
 void
 tail_n(FILE* fp, int num_lines_wanted) {
     char *buffer;
-    FILE *bof;
     int num_lines;
     long offset;
  
