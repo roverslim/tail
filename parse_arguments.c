@@ -7,6 +7,7 @@ parse_arguments(int argc, char **argv)
   char *file = NULL;
   int fflag, Fflag, rflag = 0;
   int c, index;
+  struct arguments *args;
 
   /* Supress printing of error messages by getopt */
   opterr = 0;
@@ -46,5 +47,6 @@ parse_arguments(int argc, char **argv)
         abort ();
       }
 
-  return init_arguments(file, bvalue, cvalue, nvalue, fflag, Fflag, rflag);
+  args = init_arguments(file, bvalue, cvalue, nvalue, fflag, Fflag, rflag);
+  return args;
 }

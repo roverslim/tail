@@ -22,8 +22,10 @@ init_arguments(
 
   args->file = NULL;
   if (file != NULL) {
-    args->file = malloc(sizeof(file));
+    args->file = malloc(sizeof(file) + 1);
     if (args->file == NULL) return NULL;
+
+    args->file = strcpy(args->file, file);
   }
 
   args->flags.f = f;
@@ -32,20 +34,26 @@ init_arguments(
 
   args->values.b = NULL;
   if (b != NULL) {
-    args->values.b = malloc(sizeof(b));
+    args->values.b = malloc(sizeof(b) + 1);
     if (args->values.b == NULL) return NULL;
+
+    args->values.b = strcpy(args->values.b, b);
   }
 
   args->values.c = NULL;
   if (c != NULL) {
-    args->values.c = malloc(sizeof(c));
+    args->values.c = malloc(sizeof(c) + 1);
     if (args->values.c == NULL) return NULL;
+
+    args->values.c = strcpy(args->values.c, c);
   }
 
   args->values.n = NULL;
   if (n != NULL) {
-    args->values.n = malloc(sizeof(n));
+    args->values.n = malloc(sizeof(n) + 1);
     if (args->values.n == NULL) return NULL;
+
+    args->values.n = strcpy(args->values.n, n);
   }
 
   return args;

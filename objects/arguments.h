@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 struct arguments;
 struct arguments * init_arguments(
