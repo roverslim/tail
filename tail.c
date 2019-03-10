@@ -13,6 +13,7 @@ main(int argc, char **argv) {
     struct arguments *args;
 
     args = parse_arguments(argc, argv);
+    free_arguments(args);
 
     FILE* fp = fopen("sample-file.txt", "r");
     if(!fp) {

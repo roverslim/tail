@@ -23,7 +23,10 @@ init_arguments(
   args->file = NULL;
   if (file != NULL) {
     args->file = malloc(sizeof(file) + 1);
-    if (args->file == NULL) return NULL;
+    if (args->file == NULL) {
+      free_arguments(args);
+      return NULL;
+    }
 
     args->file = strcpy(args->file, file);
   }
@@ -35,7 +38,10 @@ init_arguments(
   args->values.b = NULL;
   if (b != NULL) {
     args->values.b = malloc(sizeof(b) + 1);
-    if (args->values.b == NULL) return NULL;
+    if (args->values.b == NULL) {
+      free_arguments(args);
+      return NULL;
+    }
 
     args->values.b = strcpy(args->values.b, b);
   }
@@ -43,7 +49,10 @@ init_arguments(
   args->values.c = NULL;
   if (c != NULL) {
     args->values.c = malloc(sizeof(c) + 1);
-    if (args->values.c == NULL) return NULL;
+    if (args->values.c == NULL) {
+      free_arguments(args);
+      return NULL;
+    }
 
     args->values.c = strcpy(args->values.c, c);
   }
@@ -51,7 +60,10 @@ init_arguments(
   args->values.n = NULL;
   if (n != NULL) {
     args->values.n = malloc(sizeof(n) + 1);
-    if (args->values.n == NULL) return NULL;
+    if (args->values.n == NULL) {
+      free_arguments(args);
+      return NULL;
+    }
 
     args->values.n = strcpy(args->values.n, n);
   }
@@ -74,5 +86,6 @@ free_arguments(struct arguments *args) {
   if (args->values.n != NULL)
     free(args->values.n);
 
+  free(args);
   return;
 };
