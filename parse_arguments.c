@@ -1,13 +1,13 @@
 #include "parse_arguments.h"
 
-struct arguments *
+arguments_t *
 parse_arguments(int argc, char **argv)
 {
   char *bvalue, *cvalue, *nvalue;
   char *file;
   int fflag, Fflag, rflag;
   int c, index;
-  struct arguments *args;
+  arguments_t *args;
 
   file = bvalue = cvalue = nvalue = NULL;
   fflag = Fflag = rflag = 0;

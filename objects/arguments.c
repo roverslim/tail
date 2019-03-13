@@ -18,15 +18,15 @@ struct arguments {
     struct values values;
 };
 
-arguments *
+arguments_t *
 init_arguments(
     const char *file,
     const char *b, const char *c, const char *n,
     int f, int F, int r
 ) {
-  arguments *args;
+  arguments_t *args;
 
-  args = malloc(sizeof(arguments));
+  args = malloc(sizeof(arguments_t));
   if (args == NULL)
     return NULL;
 
@@ -82,7 +82,7 @@ init_arguments(
 };
 
 void
-free_arguments(arguments *args) {
+free_arguments(arguments_t *args) {
   if (args == NULL)
     return;
 

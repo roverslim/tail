@@ -5,4 +5,4 @@
 
 #include "objects/arguments.h"
 
-struct arguments * parse_arguments(int argc, char **argv);
+arguments_t * parse_arguments(int argc, char **argv);

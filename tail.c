@@ -10,7 +10,7 @@
  */
 int
 main(int argc, char **argv) {
-    struct arguments *args;
+    arguments_t *args;
 
     args = parse_arguments(argc, argv);
     free_arguments(args);
