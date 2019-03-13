@@ -1,32 +1,32 @@
 #include "arguments.h"
 
-typedef struct {
+struct flags {
   int f;
   int F;
   int r;
-} Flags;
+};
 
-typedef struct {
+struct values {
   char *b;
   char *c;
   char *n;
-} Values;
+};
 
 struct arguments {
     char *file;
-    Flags flags;
-    Values values;
+    struct flags flags;
+    struct values values;
 };
 
-struct arguments *
+arguments *
 init_arguments(
     const char *file,
     const char *b, const char *c, const char *n,
     int f, int F, int r
 ) {
-  struct arguments *args;
+  arguments *args;
 
-  args = malloc(sizeof(struct arguments));
+  args = malloc(sizeof(arguments));
   if (args == NULL)
     return NULL;
 
@@ -41,60 +41,60 @@ init_arguments(
     args->file = strcpy(args->file, file);
   }
 
-  (*args).flags.f = f;
-  (*args).flags.F = F;
-  (*args).flags.r = r;
+  args->flags.f = f;
+  args->flags.F = F;
+  args->flags.r = r;
 
-  (*args).values.b = NULL;
+  args->values.b = NULL;
   if (b != NULL) {
-    (*args).values.b = malloc(sizeof(b) + 1);
-    if ((*args).values.b == NULL) {
+    args->values.b = malloc(sizeof(b) + 1);
+    if (args->values.b == NULL) {
       free_arguments(args);
       return NULL;
     }
 
-    (*args).values.b = strcpy((*args).values.b, b);
+    args->values.b = strcpy(args->values.b, b);
   }
 
-  (*args).values.c = NULL;
+  args->values.c = NULL;
   if (c != NULL) {
-    (*args).values.c = malloc(sizeof(c) + 1);
-    if ((*args).values.c == NULL) {
+    args->values.c = malloc(sizeof(c) + 1);
+    if (args->values.c == NULL) {
       free_arguments(args);
       return NULL;
     }
 
-    (*args).values.c = strcpy((*args).values.c, c);
+    args->values.c = strcpy(args->values.c, c);
   }
 
-  (*args).values.n = NULL;
+  args->values.n = NULL;
   if (n != NULL) {
-    (*args).values.n = malloc(sizeof(n) + 1);
-    if ((*args).values.n == NULL) {
+    args->values.n = malloc(sizeof(n) + 1);
+    if (args->values.n == NULL) {
       free_arguments(args);
       return NULL;
     }
 
-    (*args).values.n = strcpy((*args).values.n, n);
+    args->values.n = strcpy(args->values.n, n);
   }
 
   return args;
 };
 
 void
-free_arguments(struct arguments *args) {
+free_arguments(arguments *args) {
   if (args == NULL)
     return;
 
   if (args->file != NULL)
     free(args->file);
 
-  if ((*args).values.b != NULL)
-    free((*args).values.b);
-  if ((*args).values.c != NULL)
-    free((*args).values.c);
-  if ((*args).values.n != NULL)
-    free((*args).values.n);
+  if (args->values.b != NULL)
+    free(args->values.b);
+  if (args->values.c != NULL)
+    free(args->values.c);
+  if (args->values.n != NULL)
+    free(args->values.n);
 
   free(args);
   return;
