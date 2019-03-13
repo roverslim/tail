@@ -3,12 +3,14 @@
 struct arguments *
 parse_arguments(int argc, char **argv)
 {
-  char *bvalue, *cvalue, *nvalue = NULL;
-  char *file = NULL;
-  int fflag, Fflag, rflag = 0;
+  char *bvalue, *cvalue, *nvalue;
+  char *file;
+  int fflag, Fflag, rflag;
   int c, index;
   struct arguments *args;
 
+  file = bvalue = cvalue = nvalue = NULL;
+  fflag = Fflag = rflag = 0;
   /* Supress printing of error messages by getopt */
   opterr = 0;
 
