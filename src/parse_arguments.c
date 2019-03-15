@@ -6,7 +6,7 @@ parse_arguments(int argc, char **argv)
   char *bvalue, *cvalue, *nvalue;
   char *file;
   int fflag, Fflag, rflag;
-  int c, index;
+  int c;
   arguments_t *args;
 
   file = bvalue = cvalue = nvalue = NULL;
