@@ -2,10 +2,13 @@ CC = gcc
 CFLAGS = -std=c99 -g -Wall
 INCLUDES = -Iinclude
 
-SRCS = src/arguments.c src/parse_arguments.c src/tail_n.c src/tail.c
-OBJS = $(SRCS:.c=.o)
+SRCS_DIR = src/
+SRCS = arguments.c parse_arguments.c tail_n.c tail.c
 
-MAIN = my_tail
+OBJS_DIR = obj/
+OBJS = $(patsubst %.c,$(OBJS_DIR)%.o,$(SRCS))
+
+MAIN = bin/my_tail
 
 .PHONY: depend clean
 
@@ -14,12 +17,21 @@ all: $(MAIN)
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS)
 
-.c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+obj/arguments.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c src/arguments.c -o $@
+
+obj/parse_arguments.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c src/parse_arguments.c -o $@
+
+obj/tail_n.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail_n.c -o $@
+
+obj/tail.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail.c -o $@
 
 clean:
 	$(RM) bin/* obj/*
 
-depend: $(SRCS)
+depend: $(patsubst %,$(SRCS_DIR)%,$(SRCS))
 	makedepend $(INCLUDES) $^
 
