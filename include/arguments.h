@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DEFAULT_N_VALUE 10
+enum {
+  DEFAULT_N_VALUE = 10
+};
 
 typedef struct arguments arguments_t;
 int get_n(arguments_t *args);
