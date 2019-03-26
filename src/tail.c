@@ -8,17 +8,16 @@ int
 main(int argc, char **argv) {
     arguments_t *args;
 
-    args = parse_arguments(argc, argv);
-    free_arguments(args);
-
     FILE* fp = fopen("sample-file.txt", "r");
     if(!fp) {
         perror("File opening failed");
         exit(EXIT_FAILURE);
     }
 
-    tail_n(fp, 10);
-    fclose(fp);
+    args = parse_arguments(argc, argv);
+    tail_n(fp, get_n(args));
 
+    free_arguments(args);
+    fclose(fp);
     return EXIT_SUCCESS;
 }

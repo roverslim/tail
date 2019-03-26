@@ -10,6 +10,9 @@ tail_n(FILE* fp, int num_lines_wanted) {
     char *buffer;
     int num_lines;
     long offset;
+
+    if (num_lines_wanted < 0)
+      perror("Must specify 0 or more lines to tail");
  
     num_lines = offset = 0;
     buffer = malloc(BLOCK_SIZE);

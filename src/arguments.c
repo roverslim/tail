@@ -9,13 +9,19 @@ struct flags {
 struct values {
   char *b;
   char *c;
-  char *n;
+
+  int n;
 };
 
 struct arguments {
     char *file;
     struct flags flags;
     struct values values;
+};
+
+int
+get_n(arguments_t *args) {
+  return args->values.n;
 };
 
 arguments_t *
@@ -67,16 +73,9 @@ init_arguments(
     args->values.c = strcpy(args->values.c, c);
   }
 
-  args->values.n = NULL;
-  if (n != NULL) {
-    args->values.n = malloc(sizeof(n) + 1);
-    if (args->values.n == NULL) {
-      free_arguments(args);
-      return NULL;
-    }
-
-    args->values.n = strcpy(args->values.n, n);
-  }
+  args->values.n = DEFAULT_N_VALUE;
+  if (n != NULL)
+    args->values.n = atoi(n);
 
   return args;
 };
@@ -93,8 +92,6 @@ free_arguments(arguments_t *args) {
     free(args->values.b);
   if (args->values.c != NULL)
     free(args->values.c);
-  if (args->values.n != NULL)
-    free(args->values.n);
 
   free(args);
   return;
