@@ -15,9 +15,9 @@ main(int argc, char **argv) {
     }
 
     args = parse_arguments(argc, argv);
-    tail_n(fp, get_n(args));
+    tail_n(fp, arguments_get_n(args));
 
-    free_arguments(args);
+    arguments_free(args);
     fclose(fp);
     return EXIT_SUCCESS;
 }

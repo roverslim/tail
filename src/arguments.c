@@ -20,12 +20,12 @@ struct arguments {
 };
 
 int
-get_n(arguments_t *args) {
+arguments_get_n(arguments_t *args) {
   return args->values.n;
 };
 
 arguments_t *
-init_arguments(
+arguments_init(
     const char *file,
     const char *b, const char *c, const char *n,
     int f, int F, int r
@@ -40,7 +40,7 @@ init_arguments(
   if (file != NULL) {
     args->file = malloc(sizeof(file) + 1);
     if (args->file == NULL) {
-      free_arguments(args);
+      arguments_free(args);
       return NULL;
     }
 
@@ -55,7 +55,7 @@ init_arguments(
   if (b != NULL) {
     args->values.b = malloc(sizeof(b) + 1);
     if (args->values.b == NULL) {
-      free_arguments(args);
+      arguments_free(args);
       return NULL;
     }
 
@@ -66,7 +66,7 @@ init_arguments(
   if (c != NULL) {
     args->values.c = malloc(sizeof(c) + 1);
     if (args->values.c == NULL) {
-      free_arguments(args);
+      arguments_free(args);
       return NULL;
     }
 
@@ -81,7 +81,7 @@ init_arguments(
 };
 
 void
-free_arguments(arguments_t *args) {
+arguments_free(arguments_t *args) {
   if (args == NULL)
     return;
 

@@ -49,6 +49,6 @@ parse_arguments(int argc, char **argv)
         abort ();
       }
 
-  args = init_arguments(file, bvalue, cvalue, nvalue, fflag, Fflag, rflag);
+  args = arguments_init(file, bvalue, cvalue, nvalue, fflag, Fflag, rflag);
   return args;
 }
