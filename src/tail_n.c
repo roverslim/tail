@@ -1,7 +1,14 @@
 #include "tail_n.h"
 
+static void
+display_content(FILE *fp) {
+    int c;
+    while ((c = fgetc(fp)) != EOF)
+      putchar(c);
+};
+
 void
-tail_n(FILE* fp, int num_lines_wanted) {
+tail_n(FILE *fp, int num_lines_wanted) {
     char *buffer;
     int num_lines;
     long offset;
@@ -33,16 +40,13 @@ tail_n(FILE* fp, int num_lines_wanted) {
         }
 
         if (num_lines > num_lines_wanted || beginning_pos == ftell(fp)) {
-          int c;
-          while ((c = fgetc(fp)) != EOF)
-            putchar(c);
-          break;
+            display_content(fp);
+            break;
         }
 
         if (fread(buffer, BLOCK_SIZE, BLOCK_COUNT, fp) == BLOCK_COUNT) {
-            if (strcmp("\n", buffer) == 0) {
+            if (strcmp("\n", buffer) == 0)
                 num_lines++;
-            }
         } else {
             if (feof(fp)) {
                 puts("Arrived at end of file");
