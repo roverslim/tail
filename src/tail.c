@@ -8,7 +8,7 @@ int
 main(int argc, char **argv) {
     arguments_t *args;
 
-    FILE* fp = fopen("sample-file.txt", "r");
+    FILE* fp = fopen("short-sample.txt", "r");
     if(!fp) {
         perror("File opening failed");
         exit(EXIT_FAILURE);
