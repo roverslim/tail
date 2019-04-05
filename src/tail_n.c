@@ -1,31 +1,29 @@
 #include "tail_n.h"
 
-static void
-display_content(FILE *fp) {
-    int c;
-    while ((c = fgetc(fp)) != EOF)
-      putchar(c);
-};
-
 /*
     tail_n
+
+    Sets the file position indicator for the file stream stream to the Nth-last line break.
 
     When the input is seekable:
         1- go to the end,
         2- read the preceeding char (if there is one),
         3- find out it it's a line break,
         4- repeat steps 2 & 3 until N line breaks are found
-        5- read to standard output from the Nth line break
+
+    **Return value**
+    `0` upon success. Non-zero value otherwise.
 */
-void
+int
 tail_n(FILE *fp, int num_lines_wanted) {
     int c, num_lines;
     long offset, max_offset;
 
-    if (num_lines_wanted < 0)
+    if (num_lines_wanted < 0) {
       perror("Must specify 0 or more lines to tail");
-    else if (num_lines_wanted == 0)
-      return;
+      return 1;
+    } else if (num_lines_wanted == 0)
+      return 0;
  
     num_lines = offset = 0;
     fseek(fp, 0L, SEEK_END);
@@ -44,5 +42,5 @@ tail_n(FILE *fp, int num_lines_wanted) {
         offset--;
     }
 
-    display_content(fp);
+    return 0;
 }
