@@ -17,8 +17,7 @@ tail_n(FILE *fp, int num_lines_wanted) {
     else if (num_lines_wanted == 0)
       return;
  
-    num_lines = 0;
-    offset = 0;
+    num_lines = offset = 0;
 
     // When the input is seekable,
     //  1- go to the end
