@@ -7,6 +7,16 @@ display_content(FILE *fp) {
       putchar(c);
 };
 
+/*
+    tail_n
+
+    When the input is seekable:
+        1- go to the end,
+        2- read the preceeding char (if there is one),
+        3- find out it it's a line break,
+        4- repeat steps 2 & 3 until N line breaks are found
+        5- read to standard output from the Nth line break
+*/
 void
 tail_n(FILE *fp, int num_lines_wanted) {
     int c, num_lines;
@@ -18,13 +28,6 @@ tail_n(FILE *fp, int num_lines_wanted) {
       return;
  
     num_lines = offset = 0;
-
-    // When the input is seekable,
-    //  1- go to the end
-    //  2- read a char
-    //  3- find out it it's a line break
-    //  4- repeat steps 2 & 3 until N+1 line breaks are found
-    //  5- read to standard output from the Nth+1 line break
     fseek(fp, 0L, SEEK_END);
     max_offset = ftell(fp);
 
