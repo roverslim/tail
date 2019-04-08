@@ -15,7 +15,7 @@ MAIN = bin/my_tail
 all: $(MAIN)
 
 $(MAIN): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS)
 
 obj/arguments.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c src/arguments.c -o $@
