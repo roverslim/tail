@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall
 INCLUDES = -Iinclude
+INCLUDES_TEST = -Itest/include
 
 SRCS_DIR = src/
 SRCS = arguments.c parse_arguments.c tail_n.c tail.c
@@ -14,6 +15,9 @@ MAIN = bin/my_tail
 
 all: $(MAIN)
 
+test: obj/tail_n.o obj/unity.o obj/tail_n_test.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/tail_n_test obj/tail_n.o obj/unity.o obj/tail_n_test.o
+
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS)
 
@@ -26,8 +30,14 @@ obj/parse_arguments.o:
 obj/tail_n.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail_n.c -o $@
 
+obj/tail_n_test.o:
+	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -c test/tail_n_test.c -o $@
+
 obj/tail.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail.c -o $@
+
+obj/unity.o:
+	$(CC) $(CFLAGS) $(INCLUDES_TEST) -c test/unity.c -o $@
 
 clean:
 	$(RM) bin/* obj/*
