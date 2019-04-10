@@ -19,10 +19,9 @@ tail_n(FILE *fp, int num_lines_wanted) {
     int c, num_lines;
     long offset, max_offset;
 
-    if (num_lines_wanted < 0) {
-      perror("Must specify 0 or more lines to tail");
+    if (num_lines_wanted < 0)
       return 1;
-    } else if (num_lines_wanted == 0)
+    else if (num_lines_wanted == 0)
       return 0;
  
     num_lines = offset = 0;

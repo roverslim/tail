@@ -1,6 +1,15 @@
 #include "unity.h"
 #include "tail_n.h"
 
+void test_tail_n_when_n_is_less_than_zero(void) {
+    int num_lines, exit_code;
+
+    num_lines = -3;
+
+    exit_code = tail_n(NULL, num_lines);
+    TEST_ASSERT_EQUAL_INT(1, exit_code);
+}
+
 void test_tail_n_when_n_is_zero(void) {
     int num_lines, exit_code;
 
@@ -54,6 +63,7 @@ void test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
 
 int main(void) {
     UNITY_BEGIN();
+    RUN_TEST(test_tail_n_when_n_is_less_than_zero);
     RUN_TEST(test_tail_n_when_n_is_zero);
     RUN_TEST(test_tail_n_when_n_is_less_than_the_number_of_line_breaks);
     RUN_TEST(test_tail_n_when_n_is_equal_to_the_number_of_line_breaks);
