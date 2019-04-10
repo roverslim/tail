@@ -15,7 +15,7 @@
     `0` upon success. Non-zero value otherwise.
 */
 int
-tail_n(FILE *fp, int num_lines_wanted) {
+tail_n(FILE *fp, int num_lines_wanted, direction_t direction) {
     int c, num_lines;
     long offset, max_offset;
 

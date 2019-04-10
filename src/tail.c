@@ -15,14 +15,14 @@ int
 main(int argc, char **argv) {
     arguments_t *args;
 
-    FILE* fp = fopen("short-sample.txt", "r");
+    FILE* fp = fopen("empty-file.txt", "r");
     if(!fp) {
         perror("File opening failed");
         exit(EXIT_FAILURE);
     }
 
     args = parse_arguments(argc, argv);
-    if (tail_n(fp, arguments_get_n(args)) == 0)
+    if (tail_n(fp, arguments_get_n(args), RELATIVE_TO_END) == 0)
         display_content(fp);
 
     arguments_free(args);

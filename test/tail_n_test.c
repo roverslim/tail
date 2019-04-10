@@ -6,7 +6,7 @@ void test_tail_n_when_n_is_less_than_zero(void) {
 
     num_lines = -3;
 
-    exit_code = tail_n(NULL, num_lines);
+    exit_code = tail_n(NULL, num_lines, RELATIVE_TO_END);
     TEST_ASSERT_EQUAL_INT(1, exit_code);
 }
 
@@ -15,7 +15,7 @@ void test_tail_n_when_n_is_zero(void) {
 
     num_lines = 0;
 
-    exit_code = tail_n(NULL, num_lines);
+    exit_code = tail_n(NULL, num_lines, RELATIVE_TO_END);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
 }
 
@@ -27,7 +27,7 @@ void test_tail_n_when_n_is_less_than_the_number_of_line_breaks(void) {
     num_lines = 6;
     fp = fopen("short-sample.txt", "r");
 
-    exit_code = tail_n(fp, num_lines);
+    exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
     TEST_ASSERT_EQUAL_INT(42, file_position);
@@ -41,7 +41,7 @@ void test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
     num_lines = 12;
     fp = fopen("short-sample.txt", "r");
 
-    exit_code = tail_n(fp, num_lines);
+    exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
     TEST_ASSERT_EQUAL_INT(1, file_position);
@@ -55,7 +55,7 @@ void test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     num_lines = 100;
     fp = fopen("short-sample.txt", "r");
 
-    exit_code = tail_n(fp, num_lines);
+    exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
     TEST_ASSERT_EQUAL_INT(1, file_position);
