@@ -1,5 +1,7 @@
 #include "tail_n.h"
 
+#define NEWLINE '\n'
+
 /*
     tail_n
 
@@ -16,29 +18,37 @@
 */
 int
 tail_n(FILE *fp, int num_lines_wanted, direction_t direction) {
-    int c, num_lines;
-    long offset, max_offset;
+    int newlines, multiplier, origin;
+    long max_offset;
 
     if (num_lines_wanted < 0)
       return 1;
     else if (num_lines_wanted == 0)
       return 0;
+
+    if (RELATIVE_TO_END == direction) {
+        multiplier = -1;
+        num_lines_wanted += 1;
+        origin = SEEK_END;
+    } else if (RELATIVE_TO_BEGINNING == direction) {
+        multiplier = 1;
+        num_lines_wanted -= 1;
+        origin = SEEK_SET;
+    } else
+      return 1;
  
-    num_lines = offset = 0;
+    newlines = 0;
     fseek(fp, 0L, SEEK_END);
     max_offset = ftell(fp);
 
-    while(offset + max_offset >= 0) {
-        fseek(fp, offset * sizeof(char), SEEK_END);
+    for(long offset = 0; offset <= max_offset; offset++) {
+        fseek(fp, multiplier * offset * sizeof(char), origin);
 
-        c = fgetc(fp);
-        if (c == '\n') {
-            if (num_lines == num_lines_wanted)
-                break;
-            num_lines++;
-        }
+        if (NEWLINE == fgetc(fp))
+            newlines++;
 
-        offset--;
+        if (newlines == num_lines_wanted)
+            break;
     }
 
     return 0;
