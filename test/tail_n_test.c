@@ -74,7 +74,7 @@ void test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
-    TEST_ASSERT_EQUAL_INT(1, file_position);
+    TEST_ASSERT_EQUAL_INT(0, file_position);
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_BEGINNING);
     file_position = ftell(fp);
@@ -93,7 +93,7 @@ void test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
     TEST_ASSERT_EQUAL_INT(0, exit_code);
-    TEST_ASSERT_EQUAL_INT(1, file_position);
+    TEST_ASSERT_EQUAL_INT(0, file_position);
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_BEGINNING);
     file_position = ftell(fp);

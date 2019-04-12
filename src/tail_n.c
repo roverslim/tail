@@ -18,7 +18,7 @@
 */
 int
 tail_n(FILE *fp, int num_lines_wanted, direction_t direction) {
-    int newlines, multiplier, origin;
+    int c, newlines, multiplier, origin;
     long max_offset;
 
     if (num_lines_wanted < 0)
@@ -44,11 +44,14 @@ tail_n(FILE *fp, int num_lines_wanted, direction_t direction) {
     for(long offset = 0; offset <= max_offset; offset++) {
         fseek(fp, multiplier * offset * sizeof(char), origin);
 
-        if (NEWLINE == fgetc(fp))
+        c = fgetc(fp);
+        if (NEWLINE == c)
             newlines++;
 
         if (newlines == num_lines_wanted)
             break;
+
+        ungetc(c, fp);
     }
 
     return 0;
