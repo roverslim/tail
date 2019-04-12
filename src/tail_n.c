@@ -8,7 +8,7 @@
     Sets the file position indicator for the file stream stream to the Nth-last line break.
 
     When the input is seekable:
-        1- go to the end,
+        1- go to the end of the file stream (or start from the beginning),
         2- read the preceeding char (if there is one),
         3- find out it it's a line break,
         4- repeat steps 2 & 3 until N line breaks are found
