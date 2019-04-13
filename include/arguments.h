@@ -1,11 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum {
-  DEFAULT_N_VALUE = 10
-};
-
 typedef struct arguments arguments_t;
+
 int arguments_get_n(arguments_t *args);
 arguments_t * arguments_init(
     const char *file,

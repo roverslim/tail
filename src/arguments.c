@@ -1,5 +1,9 @@
 #include "arguments.h"
 
+enum {
+  DEFAULT_N_VALUE = 10
+};
+
 struct flags {
   int f;
   int F;
