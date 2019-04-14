@@ -8,13 +8,14 @@ parse_arguments(int argc, char **argv)
   int fflag, Fflag, rflag;
   int c;
   arguments_t *args;
+  direction_t ndirection;
 
   file = bvalue = cvalue = nvalue = NULL;
   fflag = Fflag = rflag = 0;
   /* Supress printing of error messages by getopt */
   opterr = 0;
 
-  while ((c = getopt (argc, argv, "b:c:fFn:r")) != -1)
+  while ((c = getopt (argc, argv, "b:c:fFn:r")) != -1) {
     switch (c)
       {
       case 'b':
@@ -48,7 +49,17 @@ parse_arguments(int argc, char **argv)
       default:
         abort ();
       }
+  }
 
-  args = arguments_init(file, bvalue, cvalue, nvalue, fflag, Fflag, rflag);
+  ndirection = RELATIVE_TO_END;
+  if ((nvalue != NULL) && (strncmp("+", nvalue, 1) == 0))
+      ndirection = RELATIVE_TO_BEGINNING;
+
+  args = arguments_init(
+      file,
+      bvalue, cvalue, nvalue,
+      ndirection,
+      fflag, Fflag, rflag
+  );
   return args;
 }

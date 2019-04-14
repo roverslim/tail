@@ -1,4 +1,5 @@
 #include "arguments.h"
+#include "tail_n.h"
 
 enum {
   DEFAULT_N_VALUE = 10
@@ -15,6 +16,7 @@ struct values {
   char *c;
 
   int n;
+  direction_t ndirection;
 };
 
 struct arguments {
@@ -28,10 +30,16 @@ arguments_get_n(arguments_t *args) {
   return args->values.n;
 };
 
+direction_t
+arguments_get_ndirection(arguments_t *args) {
+    return args->values.ndirection;
+};
+
 arguments_t *
 arguments_init(
     const char *file,
     const char *b, const char *c, const char *n,
+    direction_t ndirection,
     int f, int F, int r
 ) {
   arguments_t *args;
@@ -80,6 +88,8 @@ arguments_init(
   args->values.n = DEFAULT_N_VALUE;
   if (n != NULL)
     args->values.n = atoi(n);
+
+  args->values.ndirection = ndirection;
 
   return args;
 };

@@ -22,7 +22,7 @@ main(int argc, char **argv) {
     }
 
     args = parse_arguments(argc, argv);
-    if (tail_n(fp, arguments_get_n(args), RELATIVE_TO_END) == 0)
+    if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0)
         display_content(fp);
 
     arguments_free(args);
