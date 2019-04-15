@@ -2,7 +2,7 @@
 #include "parse_arguments.h"
 
 void
-test_n_flag_gets_set(void) {
+test_n_value_gets_set(void) {
     arguments_t *arguments;
 
     int argc = 2;
@@ -17,6 +17,6 @@ test_n_flag_gets_set(void) {
 int
 main(void) {
     UNITY_BEGIN();
-    RUN_TEST(test_n_flag_gets_set);
+    RUN_TEST(test_n_value_gets_set);
     return UNITY_END();
 }
