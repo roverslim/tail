@@ -15,8 +15,9 @@ MAIN = bin/my_tail
 
 all: $(MAIN)
 
-test: obj/tail_n.o obj/unity.o obj/tail_n_test.o
-	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/tail_n_test obj/tail_n.o obj/unity.o obj/tail_n_test.o
+test_all: obj/arguments.o obj/parse_arguments.o obj/tail_n.o obj/unity.o obj/parse_arguments_test.o obj/tail_n_test.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/test_parse_arguments obj/arguments.o obj/parse_arguments.o obj/unity.o obj/parse_arguments_test.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/test_tail_n obj/tail_n.o obj/unity.o obj/tail_n_test.o
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS)
@@ -26,6 +27,9 @@ obj/arguments.o:
 
 obj/parse_arguments.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c src/parse_arguments.c -o $@
+
+obj/parse_arguments_test.o:
+	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -c test/parse_arguments_test.c -o $@
 
 obj/tail_n.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail_n.c -o $@
