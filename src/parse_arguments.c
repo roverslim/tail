@@ -12,8 +12,8 @@ parse_arguments(int argc, char **argv)
 
     file = bvalue = cvalue = nvalue = NULL;
     fflag = Fflag = rflag = 0;
-    /* Supress printing of error messages by getopt */
-    opterr = 0;
+    optind = 1; /* The caller can reset it to 1 to restart scanning of the same argv. (from http://man7.org/linux/man-pages/man3/getopt.3.html) */
+    opterr = 0; /* Supress printing of error messages by getopt */
 
     while ((c = getopt(argc, argv, "b:c:fFn:r")) != -1) {
         switch (c) {
