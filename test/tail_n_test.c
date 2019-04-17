@@ -1,7 +1,8 @@
 #include "unity.h"
 #include "tail_n.h"
 
-void test_tail_n_when_n_is_less_than_zero(void) {
+void
+test_tail_n_when_n_is_less_than_zero(void) {
     int num_lines, exit_code;
 
     num_lines = -3;
@@ -13,7 +14,8 @@ void test_tail_n_when_n_is_less_than_zero(void) {
     TEST_ASSERT_EQUAL_INT(1, exit_code);
 }
 
-void test_tail_n_when_n_is_zero(void) {
+void
+test_tail_n_when_n_is_zero(void) {
     int num_lines, exit_code;
 
     num_lines = 0;
@@ -25,7 +27,8 @@ void test_tail_n_when_n_is_zero(void) {
     TEST_ASSERT_EQUAL_INT(0, exit_code);
 }
 
-void test_tail_n_when_n_is_one(void) {
+void
+test_tail_n_when_n_is_one(void) {
     FILE* fp;
     int num_lines, exit_code;
     long file_position;
@@ -44,7 +47,8 @@ void test_tail_n_when_n_is_one(void) {
     TEST_ASSERT_EQUAL_INT(1, file_position);
 }
 
-void test_tail_n_when_n_is_less_than_the_number_of_line_breaks(void) {
+void
+test_tail_n_when_n_is_less_than_the_number_of_line_breaks(void) {
     FILE* fp;
     int num_lines, exit_code;
     long file_position;
@@ -63,7 +67,8 @@ void test_tail_n_when_n_is_less_than_the_number_of_line_breaks(void) {
     TEST_ASSERT_EQUAL_INT(14, file_position);
 }
 
-void test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
+void
+test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
     FILE* fp;
     int num_lines, exit_code;
     long file_position;
@@ -82,7 +87,8 @@ void test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
     TEST_ASSERT_EQUAL_INT(79, file_position);
 }
 
-void test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
+void
+test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     FILE* fp;
     int num_lines, exit_code;
     long file_position;
@@ -101,7 +107,8 @@ void test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     TEST_ASSERT_EQUAL_INT(87, file_position);
 }
 
-int main(void) {
+int
+main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_tail_n_when_n_is_less_than_zero);
     RUN_TEST(test_tail_n_when_n_is_zero);
