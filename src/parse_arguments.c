@@ -46,7 +46,7 @@ parse_arguments(int argc, char **argv)
                          optopt);
                 return NULL;
             default:
-            abort ();
+                abort ();
         }
     }
 
