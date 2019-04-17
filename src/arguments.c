@@ -85,9 +85,10 @@ arguments_init(
     args->values.c = strcpy(args->values.c, c);
   }
 
-  args->values.n = DEFAULT_N_VALUE;
   if (n != NULL)
-    args->values.n = atoi(n);
+    args->values.n = abs(atoi(n));
+  else
+    args->values.n = DEFAULT_N_VALUE;
 
   args->values.ndirection = ndirection;
 

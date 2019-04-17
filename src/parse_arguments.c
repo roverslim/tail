@@ -51,8 +51,9 @@ parse_arguments(int argc, char **argv)
     }
 
     ndirection = RELATIVE_TO_END;
-    if ((nvalue != NULL) && (strncmp("+", nvalue, 1) == 0))
-        ndirection = RELATIVE_TO_BEGINNING;
+    if (nvalue != NULL)
+        if (strncmp("+", nvalue, 1) == 0)
+            ndirection = RELATIVE_TO_BEGINNING;
 
     args = arguments_init(
         file,
