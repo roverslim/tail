@@ -1,51 +1,49 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall
 INCLUDES = -Iinclude
-INCLUDES_TEST = -Itest/include
+INCLUDES_TEST = $(INCLUDES) -Itest/include
 
-SRCS_DIR = src/
-SRCS = arguments.c parse_arguments.c tail_n.c tail.c
+vpath %.c src test
+vpath %.h include test/include
+vpath %.o obj
 
-OBJS_DIR = obj/
-OBJS = $(patsubst %.c,$(OBJS_DIR)%.o,$(SRCS))
+.PHONY: all clean test
 
-MAIN = bin/my_tail
-
-.PHONY: depend clean
-
-all: $(MAIN)
-
-test_all: obj/arguments.o obj/parse_arguments.o obj/tail_n.o obj/unity.o obj/parse_arguments_test.o obj/tail_n_test.o
-	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/test_parse_arguments obj/arguments.o obj/parse_arguments.o obj/unity.o obj/parse_arguments_test.o
-	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -o bin/test_tail_n obj/tail_n.o obj/unity.o obj/tail_n_test.o
-
-$(MAIN): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS)
-
-obj/arguments.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/arguments.c -o $@
-
-obj/parse_arguments.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/parse_arguments.c -o $@
-
-obj/parse_arguments_test.o:
-	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -c test/parse_arguments_test.c -o $@
-
-obj/tail_n.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail_n.c -o $@
-
-obj/tail_n_test.o:
-	$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_TEST) -c test/tail_n_test.c -o $@
-
-obj/tail.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/tail.c -o $@
-
-obj/unity.o:
-	$(CC) $(CFLAGS) $(INCLUDES_TEST) -c test/unity.c -o $@
+all: bin/tail
 
 clean:
-	$(RM) bin/* obj/*
+		$(RM) bin/* obj/*
+		
+test: bin/parse_arguments_test bin/tail_n_test
+		./bin/parse_arguments_test
+		./bin/tail_n_test
 
-depend: $(patsubst %,$(SRCS_DIR)%,$(SRCS))
-	makedepend $(INCLUDES) $^
+bin/parse_arguments_test: parse_arguments_test.o arguments.o parse_arguments.o unity.o
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -o $@ $^
 
+bin/tail: arguments.o parse_arguments.o tail.o tail_n.o
+		$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
+
+bin/tail_n_test: tail_n_test.o tail_n.o unity.o
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -o $@ $^
+
+obj/arguments.o: arguments.c arguments.h
+		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+obj/parse_arguments.o: parse_arguments.c parse_arguments.h
+		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+obj/parse_arguments_test.o: parse_arguments_test.c arguments.h parse_arguments.h unity.h
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -c $< -o $@
+
+obj/tail.o: tail.c
+		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+obj/tail_n.o: tail_n.c tail_n.h
+		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+obj/tail_n_test.o: tail_n_test.c unity.h
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -c $< -o $@
+
+obj/unity.o: unity.c unity.h
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -c $< -o $@
