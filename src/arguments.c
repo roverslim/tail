@@ -1,5 +1,4 @@
 #include "arguments.h"
-#include "tail_n.h"
 
 enum {
     DEFAULT_N_VALUE = 10
