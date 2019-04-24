@@ -14,9 +14,13 @@ all: bin/tail
 clean:
 		$(RM) bin/* obj/*
 		
-test: bin/parse_arguments_test bin/tail_n_test
+test: bin/arguments_test bin/parse_arguments_test bin/tail_n_test
+		./bin/arguments_test
 		./bin/parse_arguments_test
 		./bin/tail_n_test
+
+bin/arguments_test: arguments_test.o arguments.o unity.o
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -o $@ $^
 
 bin/parse_arguments_test: parse_arguments_test.o arguments.o parse_arguments.o unity.o
 		$(CC) $(CFLAGS) $(INCLUDES_TEST) -o $@ $^
@@ -29,6 +33,9 @@ bin/tail_n_test: tail_n_test.o tail_n.o unity.o
 
 obj/arguments.o: arguments.c arguments.h
 		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+obj/arguments_test.o: arguments_test.c arguments.h unity.h
+		$(CC) $(CFLAGS) $(INCLUDES_TEST) -c $< -o $@
 
 obj/parse_arguments.o: parse_arguments.c parse_arguments.h
 		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
