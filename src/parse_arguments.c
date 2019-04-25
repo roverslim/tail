@@ -37,13 +37,11 @@ parse_arguments(int argc, char **argv)
                 break;
             case '?':
                 if (optopt == 'b' || optopt == 'c' || optopt == 'n')
-                fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
                 else if (isprint (optopt))
-                fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+                    fprintf (stderr, "Unknown option `-%c'.\n", optopt);
                 else
-                fprintf (stderr,
-                         "Unknown option character `\\x%x'.\n",
-                         optopt);
+                    fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
                 return NULL;
             default:
                 abort ();
