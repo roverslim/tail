@@ -60,7 +60,7 @@ arguments_init(
 
     args->values.b = NULL;
     if (b != NULL) {
-        args->values.b = malloc(sizeof(b) + 1);
+        args->values.b = malloc(strlen(b) * sizeof(char) + 1);
         if (args->values.b == NULL) {
             arguments_free(args);
             return NULL;
@@ -71,7 +71,7 @@ arguments_init(
 
     args->values.c = NULL;
     if (c != NULL) {
-        args->values.c = malloc(sizeof(c) + 1);
+        args->values.c = malloc(strlen(c) * sizeof(char) + 1);
         if (args->values.c == NULL) {
             arguments_free(args);
             return NULL;
