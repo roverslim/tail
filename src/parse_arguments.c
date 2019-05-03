@@ -4,12 +4,15 @@ arguments_t *
 parse_arguments(int argc, char **argv)
 {
     char *bvalue, *cvalue, *nvalue;
+    char **files;
     char *file;
     int fflag, Fflag, rflag;
     int c;
+    int num_files;
     arguments_t *args;
     direction_t ndirection;
 
+    files = NULL;
     file = bvalue = cvalue = nvalue = NULL;
     fflag = Fflag = rflag = 0;
     optind = 1; /* The caller can reset it to 1 to restart scanning of the same argv. (from http://man7.org/linux/man-pages/man3/getopt.3.html) */
@@ -48,13 +51,25 @@ parse_arguments(int argc, char **argv)
         }
     }
 
+    if ((num_files = argc - optind) > 0) {
+        files = malloc(num_files * sizeof(char **) + 1);
+
+        for (int argc_index = optind, files_index = 0; argc_index < argc; argc_index++, files_index++) {
+            file = argv[argc_index];
+            files[files_index] = malloc(strlen(file) * sizeof(char) + 1);
+            strcpy(files[files_index], file);
+        }
+
+        files[num_files] = NULL;
+    }
+
     ndirection = RELATIVE_TO_END;
     if (nvalue != NULL)
         if (strncmp("+", nvalue, 1) == 0)
             ndirection = RELATIVE_TO_BEGINNING;
 
     args = arguments_init(
-        file,
+        files,
         bvalue, cvalue, nvalue,
         ndirection,
         fflag, Fflag, rflag

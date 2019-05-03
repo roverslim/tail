@@ -14,18 +14,24 @@ display_content(FILE *fp) {
 int
 main(int argc, char **argv) {
     arguments_t *args;
-
-    FILE* fp = fopen("short-sample.txt", "r");
-    if(!fp) {
-        perror("File opening failed");
-        exit(EXIT_FAILURE);
-    }
+    char *file;
+    FILE *fp;
 
     args = parse_arguments(argc, argv);
-    if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0)
-        display_content(fp);
+
+    for (int i = 0; (file = arguments_get_files(args)[i]) != NULL; i++) {
+        fp = fopen(file, "r");
+        if(!fp) {
+            printf("tail: %s: No such file or directory\n", file);
+            exit(EXIT_FAILURE);
+        }
+
+        if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0)
+            display_content(fp);
+
+        fclose(fp);
+    }
 
     arguments_free(args);
-    fclose(fp);
     return EXIT_SUCCESS;
 }

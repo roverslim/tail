@@ -19,9 +19,14 @@ struct values {
 };
 
 struct arguments {
-    char *file;
+    char **files;
     struct flags flags;
     struct values values;
+};
+
+char **
+arguments_get_files(arguments_t *args) {
+    return args->files;
 };
 
 int
@@ -36,7 +41,7 @@ arguments_get_ndirection(arguments_t *args) {
 
 arguments_t *
 arguments_init(
-    const char *file,
+    char **files,
     const char *b, const char *c, const char *n,
     direction_t ndirection,
     int f, int F, int r
@@ -47,16 +52,7 @@ arguments_init(
     if (args == NULL)
         return NULL;
 
-    args->file = NULL;
-    if (file != NULL) {
-        args->file = malloc(sizeof(file) + 1);
-        if (args->file == NULL) {
-            arguments_free(args);
-            return NULL;
-        }
-
-        args->file = strcpy(args->file, file);
-    }
+    args->files = files;
 
     args->flags.f = f;
     args->flags.F = F;
@@ -99,8 +95,11 @@ arguments_free(arguments_t *args) {
     if (args == NULL)
         return;
 
-    if (args->file != NULL)
-        free(args->file);
+    if (args->files != NULL) {
+        for (int i = 0; (args->files)[i] != NULL; i++)
+            free((args->files)[i]);
+        free(args->files);
+    }
 
     if (args->values.b != NULL)
         free(args->values.b);
