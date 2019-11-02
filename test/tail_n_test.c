@@ -107,6 +107,26 @@ test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     TEST_ASSERT_EQUAL_INT(87, file_position);
 }
 
+void
+test_tail_n_when_input_file_is_empty(void) {
+    FILE* fp;
+    int num_lines, exit_code;
+    long file_position;
+
+    num_lines = 3;
+    fp = fopen("empty-file.txt", "r");
+
+    exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
+    file_position = ftell(fp);
+    TEST_ASSERT_EQUAL_INT(0, exit_code);
+    TEST_ASSERT_EQUAL_INT(0, file_position);
+
+    exit_code = tail_n(fp, num_lines, RELATIVE_TO_BEGINNING);
+    file_position = ftell(fp);
+    TEST_ASSERT_EQUAL_INT(0, exit_code);
+    TEST_ASSERT_EQUAL_INT(0, file_position);
+}
+
 int
 main(void) {
     UNITY_BEGIN();
@@ -116,5 +136,6 @@ main(void) {
     RUN_TEST(test_tail_n_when_n_is_less_than_the_number_of_line_breaks);
     RUN_TEST(test_tail_n_when_n_is_equal_to_the_number_of_line_breaks);
     RUN_TEST(test_tail_n_when_n_is_more_than_the_number_of_line_breaks);
+    RUN_TEST(test_tail_n_when_input_file_is_empty);
     return UNITY_END();
 }
