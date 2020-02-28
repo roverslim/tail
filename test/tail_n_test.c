@@ -34,7 +34,7 @@ test_tail_n_when_n_is_one(void) {
     long file_position;
 
     num_lines = 1;
-    fp = fopen("short-sample.txt", "r");
+    fp = fopen("test/data/short-sample.txt", "r");
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
@@ -54,7 +54,7 @@ test_tail_n_when_n_is_less_than_the_number_of_line_breaks(void) {
     long file_position;
 
     num_lines = 3;
-    fp = fopen("short-sample.txt", "r");
+    fp = fopen("test/data/short-sample.txt", "r");
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
@@ -74,7 +74,7 @@ test_tail_n_when_n_is_equal_to_the_number_of_line_breaks(void) {
     long file_position;
 
     num_lines = 12;
-    fp = fopen("short-sample.txt", "r");
+    fp = fopen("test/data/short-sample.txt", "r");
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
@@ -94,7 +94,7 @@ test_tail_n_when_n_is_more_than_the_number_of_line_breaks(void) {
     long file_position;
 
     num_lines = 100;
-    fp = fopen("short-sample.txt", "r");
+    fp = fopen("test/data/short-sample.txt", "r");
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
@@ -114,7 +114,7 @@ test_tail_n_when_input_file_is_empty(void) {
     long file_position;
 
     num_lines = 3;
-    fp = fopen("empty-file.txt", "r");
+    fp = fopen("test/data/empty-file.txt", "r");
 
     exit_code = tail_n(fp, num_lines, RELATIVE_TO_END);
     file_position = ftell(fp);
