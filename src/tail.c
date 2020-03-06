@@ -16,6 +16,7 @@ main(int argc, char **argv) {
     arguments_t *args;
     char *file;
     FILE *fp;
+    int numFiles;
 
     args = parse_arguments(argc, argv);
 
@@ -26,8 +27,14 @@ main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
 
-        if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0)
+        if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0) {
+            numFiles = arguments_get_numFiles(args);
+            if (numFiles > 1)
+                printf("==> %s <==\n", file);
             display_content(fp);
+            if (i + 1 < numFiles && numFiles > 1)
+                printf("\n");
+        }
 
         fclose(fp);
     }
