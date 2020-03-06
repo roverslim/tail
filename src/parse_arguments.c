@@ -8,7 +8,7 @@ parse_arguments(int argc, char **argv)
     char *file;
     int fflag, Fflag, rflag;
     int c;
-    int num_files;
+    int numFiles;
     arguments_t *args;
     direction_t ndirection;
 
@@ -51,8 +51,9 @@ parse_arguments(int argc, char **argv)
         }
     }
 
-    if ((num_files = argc - optind) > 0) {
-        files = malloc(num_files * sizeof(char **) + 1);
+    numFiles = argc - optind;
+    if (numFiles > 0) {
+        files = malloc(numFiles * sizeof(char **) + 1);
 
         for (int argc_index = optind, files_index = 0; argc_index < argc; argc_index++, files_index++) {
             file = argv[argc_index];
@@ -60,7 +61,7 @@ parse_arguments(int argc, char **argv)
             strcpy(files[files_index], file);
         }
 
-        files[num_files] = NULL;
+        files[numFiles] = NULL;
     }
 
     ndirection = RELATIVE_TO_END;
@@ -69,7 +70,7 @@ parse_arguments(int argc, char **argv)
             ndirection = RELATIVE_TO_BEGINNING;
 
     args = arguments_init(
-        files,
+        files, numFiles,
         bvalue, cvalue, nvalue,
         ndirection,
         fflag, Fflag, rflag

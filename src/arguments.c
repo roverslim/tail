@@ -20,6 +20,7 @@ struct values {
 
 struct arguments {
     char **files;
+    int numFiles;
     struct flags flags;
     struct values values;
 };
@@ -27,6 +28,11 @@ struct arguments {
 char **
 arguments_get_files(arguments_t *args) {
     return args->files;
+};
+
+int
+arguments_get_numFiles(arguments_t *args) {
+    return args->numFiles;
 };
 
 int
@@ -41,7 +47,7 @@ arguments_get_ndirection(arguments_t *args) {
 
 arguments_t *
 arguments_init(
-    char **files,
+    char **files, int numFiles,
     const char *b, const char *c, const char *n,
     direction_t ndirection,
     int f, int F, int r
@@ -53,6 +59,7 @@ arguments_init(
         return NULL;
 
     args->files = files;
+    args->numFiles = numFiles;
 
     args->flags.f = f;
     args->flags.F = F;
