@@ -8,6 +8,7 @@ struct flags {
     int f;
     int F;
     int r;
+    int q;
 };
 
 struct values {
@@ -45,12 +46,17 @@ arguments_get_ndirection(arguments_t *args) {
     return args->values.ndirection;
 };
 
+int
+arguments_get_qFlag(arguments_t *args) {
+    return args->flags.q;
+};
+
 arguments_t *
 arguments_init(
     char **files, int numFiles,
     const char *b, const char *c, const char *n,
     direction_t ndirection,
-    int f, int F, int r
+    int f, int F, int r, int q
 ) {
     arguments_t *args;
 
@@ -64,6 +70,7 @@ arguments_init(
     args->flags.f = f;
     args->flags.F = F;
     args->flags.r = r;
+    args->flags.q = q;
 
     args->values.b = NULL;
     if (b != NULL) {

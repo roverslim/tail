@@ -16,7 +16,7 @@ main(int argc, char **argv) {
     arguments_t *args;
     char *file;
     FILE *fp;
-    int numFiles;
+    int numFiles, suppressHeaders;
 
     args = parse_arguments(argc, argv);
 
@@ -29,10 +29,12 @@ main(int argc, char **argv) {
 
         if (tail_n(fp, arguments_get_n(args), arguments_get_ndirection(args)) == 0) {
             numFiles = arguments_get_numFiles(args);
-            if (numFiles > 1)
+            suppressHeaders = arguments_get_qFlag(args);
+
+            if (!suppressHeaders && numFiles > 1)
                 printf("==> %s <==\n", file);
             display_content(fp);
-            if (i + 1 < numFiles && numFiles > 1)
+            if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
                 printf("\n");
         }
 

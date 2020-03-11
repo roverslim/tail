@@ -2,6 +2,35 @@
 #include "parse_arguments.h"
 
 void
+test_qFlag_is_set(void) {
+    arguments_t *args;
+
+    int argc = 2;
+    char *argv0 = "tail";
+    char *argv1 = "-q";
+    char *argv[] = {argv0, argv1};
+
+    args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(1, arguments_get_qFlag(args));
+
+    arguments_free(args);
+}
+
+void
+test_qFlag_is_not_set(void) {
+    arguments_t *args;
+
+    int argc = 1;
+    char *argv0 = "tail";
+    char *argv[] = {argv0};
+
+    args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(0, arguments_get_qFlag(args));
+
+    arguments_free(args);
+}
+
+void
 test_numFiles_when_no_file_is_provided(void) {
     arguments_t *args;
 
@@ -101,6 +130,8 @@ test_n_value_has_relative_to_the_beginning_directionality(void) {
 int
 main(void) {
     UNITY_BEGIN();
+    RUN_TEST(test_qFlag_is_set);
+    RUN_TEST(test_qFlag_is_not_set);
     RUN_TEST(test_numFiles_when_no_file_is_provided);
     RUN_TEST(test_numFiles_when_one_file_is_provided);
     RUN_TEST(test_numFiles_when_multiple_files_are_provided);
