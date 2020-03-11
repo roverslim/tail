@@ -51,6 +51,11 @@ arguments_get_qFlag(arguments_t *args) {
     return args->flags.q;
 };
 
+int
+arguments_get_rFlag(arguments_t *args) {
+    return args->flags.r;
+};
+
 arguments_t *
 arguments_init(
     char **files, int numFiles,

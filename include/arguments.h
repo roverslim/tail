@@ -6,6 +6,7 @@ typedef struct arguments arguments_t;
 
 int arguments_get_n(arguments_t *args);
 int arguments_get_qFlag(arguments_t *args);
+int arguments_get_rFlag(arguments_t *args);
 int arguments_get_numFiles(arguments_t *args);
 char ** arguments_get_files(arguments_t *args);
 direction_t arguments_get_ndirection(arguments_t *args);
