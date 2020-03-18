@@ -1,6 +1,22 @@
 #include "tail_n.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "arguments.h"
+#include "parse_arguments.h"
+
 #define NEWLINE '\n'
+
+static void
+write_buffer(FILE *fp, char **buffer) {
+    int c, i = 0;
+
+    while ((c = fgetc(fp)) != EOF) {
+        sprintf((*buffer + i), "%c", c);
+        i++;
+    }
+}
 
 /*
     tail_n
@@ -17,42 +33,105 @@
     `0` upon success. Non-zero value otherwise.
 */
 int
-tail_n(FILE *fp, int num_lines_wanted, direction_t direction) {
+tail_n(FILE *fp,
+        bool nValueProvided, unsigned int nValue, direction_t direction,
+        int reverseOrder) {
     int c, newlines, multiplier, origin;
-    long max_offset;
+    long maxOffset;
 
-    if (num_lines_wanted < 0)
-      return 1;
-    else if (num_lines_wanted == 0)
-      return 0;
+    if (fp == NULL)
+        return 1;
+
+    if (nValue == 0) {
+        if (RELATIVE_TO_END == direction)
+            fseek(fp, 0L, SEEK_END);
+        return 0;
+    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == direction) {
+        fseek(fp, 0L, SEEK_SET);
+        return 0;
+    }
 
     if (RELATIVE_TO_END == direction) {
         multiplier = -1;
-        num_lines_wanted += 1;
+        nValue += 1;
         origin = SEEK_END;
     } else if (RELATIVE_TO_BEGINNING == direction) {
         multiplier = 1;
-        num_lines_wanted -= 1;
+        nValue -= 1;
         origin = SEEK_SET;
     } else
       return 1;
  
     newlines = 0;
     fseek(fp, 0L, SEEK_END);
-    max_offset = ftell(fp);
+    maxOffset = ftell(fp);
 
-    for(long offset = 0; offset <= max_offset; offset++) {
+    for(long offset = 0; offset <= maxOffset; offset++) {
         fseek(fp, multiplier * offset * sizeof(char), origin);
 
         c = fgetc(fp);
         if (NEWLINE == c)
             newlines++;
 
-        if (newlines == num_lines_wanted)
+        if (!reverseOrder && (newlines == nValue))
             break;
 
         ungetc(c, fp);
     }
 
+    return 0;
+}
+
+int
+tail(int argc, char **argv, FILE *stream) {
+    arguments_t *args;
+    direction_t direction;
+    char *filename, *output;
+    FILE *fp;
+    unsigned int nValue;
+    bool nValueProvided;
+    int numFiles, reverseOrder, rFlag, suppressHeaders;
+    long position, maxOffset;
+
+
+    args = parse_arguments(argc, argv);
+    
+    direction = arguments_get_ndirection(args);
+    numFiles = arguments_get_numFiles(args);
+    nValue = arguments_get_n(args);
+    nValueProvided = arguments_is_nValue_provided(args);
+    reverseOrder = arguments_get_rFlag(args);
+    rFlag = arguments_get_rFlag(args);
+    suppressHeaders = arguments_get_qFlag(args);
+
+    for (int i = 0; (filename = arguments_get_files(args)[i]) != NULL; i++) {
+        fp = fopen(filename, "r");
+        if(!fp) {
+            fprintf(stream, "tail: %s: No such file or directory\n", filename);
+            return -1;
+        }
+
+        if (tail_n(fp, nValueProvided, nValue, direction, reverseOrder) == 0) {
+
+            if (!suppressHeaders && numFiles > 1)
+                fprintf(stream, "==> %s <==\n", filename);
+            if (reverseOrder == 0) {
+                position = ftell(fp);
+                fseek(fp, 0L, SEEK_END);
+                maxOffset = ftell(fp);
+                output = malloc(2 * maxOffset + 1);
+                fseek(fp, position, SEEK_SET);
+
+                write_buffer(fp, &output);
+                fprintf(stream, "%s", output);
+                free(output);
+            }
+            if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
+                fprintf(stream, "\n");
+        }
+        fclose(fp);
+    }
+
+    arguments_free(args);
     return 0;
 }

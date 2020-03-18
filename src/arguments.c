@@ -15,7 +15,8 @@ struct values {
     char *b;
     char *c;
 
-    int n;
+    bool is_n_provided;
+    unsigned int n;
     direction_t ndirection;
 };
 
@@ -36,7 +37,7 @@ arguments_get_numFiles(arguments_t *args) {
     return args->numFiles;
 };
 
-int
+unsigned int
 arguments_get_n(arguments_t *args) {
     return args->values.n;
 };
@@ -44,6 +45,11 @@ arguments_get_n(arguments_t *args) {
 direction_t
 arguments_get_ndirection(arguments_t *args) {
     return args->values.ndirection;
+};
+
+bool
+arguments_is_nValue_provided(arguments_t *args) {
+  return args->values.is_n_provided;
 };
 
 int
@@ -99,10 +105,13 @@ arguments_init(
         args->values.c = strcpy(args->values.c, c);
     }
 
-    if (n != NULL)
-        args->values.n = abs(atoi(n));
-    else
+    if (n != NULL) {
+        args->values.n = (unsigned int) abs(atoi(n));
+        args->values.is_n_provided = true;
+    } else {
         args->values.n = DEFAULT_N_VALUE;
+        args->values.is_n_provided = false;
+    }
 
     args->values.ndirection = ndirection;
 

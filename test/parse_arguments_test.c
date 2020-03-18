@@ -1,5 +1,7 @@
-#include "unity.h"
 #include "parse_arguments.h"
+
+#include "unity.h"
+#include "arguments.h"
 
 void
 test_rFlag_is_set(void) {
@@ -40,6 +42,8 @@ test_when_no_flags_are_set(void) {
     char *argv[] = {argv0};
 
     args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(false, arguments_is_nValue_provided(args));
+    TEST_ASSERT_EQUAL(10, arguments_get_n(args));
     TEST_ASSERT_EQUAL(0, arguments_get_qFlag(args));
     TEST_ASSERT_EQUAL(0, arguments_get_rFlag(args));
 
@@ -103,6 +107,7 @@ test_n_value_has_default_directionality(void) {
     char *argv[] = {arg0, arg1, arg2};
 
     args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(true, arguments_is_nValue_provided(args));
     TEST_ASSERT_EQUAL(3, arguments_get_n(args));
     TEST_ASSERT_EQUAL(RELATIVE_TO_END, arguments_get_ndirection(args));
 
@@ -120,6 +125,7 @@ test_n_value_has_relative_to_the_end_directionality(void) {
     char *argv[] = {arg0, arg1, arg2};
 
     args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(true, arguments_is_nValue_provided(args));
     TEST_ASSERT_EQUAL(3, arguments_get_n(args));
     TEST_ASSERT_EQUAL(RELATIVE_TO_END, arguments_get_ndirection(args));
 
@@ -137,8 +143,23 @@ test_n_value_has_relative_to_the_beginning_directionality(void) {
     char *argv[] = {argv0, argv1, argv2};
 
     args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(true, arguments_is_nValue_provided(args));
     TEST_ASSERT_EQUAL(3, arguments_get_n(args));
     TEST_ASSERT_EQUAL(RELATIVE_TO_BEGINNING, arguments_get_ndirection(args));
+
+    arguments_free(args);
+}
+
+void
+test_parse_arguments_when_nValue_is_not_provided(void) {
+    arguments_t *args;
+
+    int argc = 1;
+    char *argv0 = "tail";
+    char *argv[] = {argv0};
+
+    args = parse_arguments(argc, argv);
+    TEST_ASSERT_EQUAL(false, arguments_is_nValue_provided(args));
 
     arguments_free(args);
 }
@@ -155,5 +176,6 @@ main(void) {
     RUN_TEST(test_n_value_has_default_directionality);
     RUN_TEST(test_n_value_has_relative_to_the_end_directionality);
     RUN_TEST(test_n_value_has_relative_to_the_beginning_directionality);
+    RUN_TEST(test_parse_arguments_when_nValue_is_not_provided);
     return UNITY_END();
 }

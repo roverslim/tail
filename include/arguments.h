@@ -1,10 +1,7 @@
-#include <stdlib.h>
-#include <string.h>
-#include "tail_n.h"
+#include "tail.h"
 
-typedef struct arguments arguments_t;
-
-int arguments_get_n(arguments_t *args);
+unsigned int arguments_get_n(arguments_t *args);
+bool arguments_is_nValue_provided(arguments_t *args);
 int arguments_get_qFlag(arguments_t *args);
 int arguments_get_rFlag(arguments_t *args);
 int arguments_get_numFiles(arguments_t *args);
