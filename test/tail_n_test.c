@@ -6,17 +6,16 @@
 #include "unity.h"
 
 void
-test_tail_when_file_does_not_exist(void) {
-    char *argv0 = "tail";
-    char *argv1 = "no-such-file";
-    char *argv[] = {argv0, argv1};
-    int argc = 2, status;
-
-    char *output, *expectedOutput, testFilename[255];
+test_assert_tail(
+      int expectedStatus, char *expectedOutput,
+      int argc, char **argv
+) {
+    char *output, testFilename[255];
     FILE *fp;
+    int status;
 
-    expectedOutput = "tail: no-such-file: No such file or directory\n";
     output = malloc(strlen(expectedOutput) + 1);
+    TEST_ASSERT_NOT_NULL(output);
 
     srand(time(0));
     sprintf(testFilename, "/tmp/tail_test.%d", rand());
@@ -30,9 +29,22 @@ test_tail_when_file_does_not_exist(void) {
     fclose(fp);
     remove(testFilename);
 
-    TEST_ASSERT_EQUAL(-1, status);
+    TEST_ASSERT_EQUAL(expectedStatus, status);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, output);
     free(output);
+}
+
+void
+test_tail_when_file_does_not_exist(void) {
+    char *argv0 = "tail";
+    char *argv1 = "no-such-file";
+    char *argv[] = {argv0, argv1};
+    int argc = 2;
+
+    char *expectedOutput;
+
+    expectedOutput = "tail: no-such-file: No such file or directory\n";
+    test_assert_tail(-1, expectedOutput, argc, argv);
 }
 
 void
@@ -40,10 +52,9 @@ test_tail_with_default_arguments(void) {
     char *argv0 = "tail";
     char *argv1 = "test/data/short-sample.txt";
     char *argv[] = {argv0, argv1};
-    int argc = 2, status;
+    int argc = 2;
 
-    char *output, *expectedOutput, testFilename[255];
-    FILE *fp;
+    char *expectedOutput;
 
     expectedOutput = "\
 line 3\n\
@@ -56,23 +67,8 @@ line 9\n\
 line 10\n\
 line 11\n\
 line 12\n";
-    output = malloc(strlen(expectedOutput) + 1);
 
-    srand(time(0));
-    sprintf(testFilename, "/tmp/tail_test.%d", rand());
-    fp = fopen(testFilename, "w+");
-    TEST_ASSERT_NOT_NULL(fp);
-
-    status = tail(argc, argv, fp);
-
-    fseek(fp, 0L, SEEK_SET);
-    write_buffer(fp, &output);
-    fclose(fp);
-    remove(testFilename);
-
-    TEST_ASSERT_EQUAL(0, status);
-    TEST_ASSERT_EQUAL_STRING(expectedOutput, output);
-    free(output);
+    test_assert_tail(0, expectedOutput, argc, argv);
 }
 
 void
