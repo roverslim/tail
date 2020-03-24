@@ -28,6 +28,7 @@ test_tail_when_file_does_not_exist(void) {
     fseek(fp, 0L, SEEK_SET);
     write_buffer(fp, &output);
     fclose(fp);
+    remove(testFilename);
 
     TEST_ASSERT_EQUAL(-1, status);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, output);
@@ -67,6 +68,7 @@ line 12\n";
     fseek(fp, 0L, SEEK_SET);
     write_buffer(fp, &output);
     fclose(fp);
+    remove(testFilename);
 
     TEST_ASSERT_EQUAL(0, status);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, output);
