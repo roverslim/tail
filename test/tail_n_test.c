@@ -1,18 +1,9 @@
 #include "tail_n.h"
 
 #include <time.h>
+
+#include "helpers.h"
 #include "unity.h"
-
-static void
-write_buffer(FILE *fp, char **buffer) {
-    int c, i = 0;
-
-    fseek(fp, 0L, SEEK_SET);
-    while ((c = fgetc(fp)) != EOF) {
-        sprintf((*buffer + i), "%c", c);
-        i++;
-    }
-}
 
 void
 test_tail_when_file_does_not_exist(void) {
@@ -34,6 +25,7 @@ test_tail_when_file_does_not_exist(void) {
 
     status = tail(argc, argv, fp);
 
+    fseek(fp, 0L, SEEK_SET);
     write_buffer(fp, &output);
     fclose(fp);
 
@@ -72,6 +64,7 @@ line 12\n";
 
     status = tail(argc, argv, fp);
 
+    fseek(fp, 0L, SEEK_SET);
     write_buffer(fp, &output);
     fclose(fp);
 

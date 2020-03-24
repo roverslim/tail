@@ -4,19 +4,10 @@
 #include <stdlib.h>
 
 #include "arguments.h"
+#include "helpers.h"
 #include "parse_arguments.h"
 
 #define NEWLINE '\n'
-
-static void
-write_buffer(FILE *fp, char **buffer) {
-    int c, i = 0;
-
-    while ((c = fgetc(fp)) != EOF) {
-        sprintf((*buffer + i), "%c", c);
-        i++;
-    }
-}
 
 /*
     tail_n
