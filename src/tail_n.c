@@ -96,6 +96,7 @@ tail(int argc, char **argv, FILE *stream) {
         fp = fopen(filename, "r");
         if(!fp) {
             fprintf(stream, "tail: %s: No such file or directory\n", filename);
+            arguments_free(args);
             return -1;
         }
 
