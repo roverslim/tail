@@ -2,7 +2,6 @@
 
 #include <time.h>
 
-#include "helpers.h"
 #include "unity.h"
 
 void
@@ -25,7 +24,7 @@ test_assert_tail(
     status = tail(argc, argv, fp);
 
     fseek(fp, 0L, SEEK_SET);
-    write_buffer(fp, &output);
+    fread(output, strlen(expectedOutput) + 1, 1, fp);
     fclose(fp);
     remove(testFilename);
 

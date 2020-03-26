@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #include "arguments.h"
-#include "helpers.h"
 #include "parse_arguments.h"
 
 #define NEWLINE '\n'
@@ -77,13 +76,11 @@ int
 tail(int argc, char **argv, FILE *stream) {
     arguments_t *args;
     direction_t direction;
-    char *filename, *output;
+    char *filename;
     FILE *fp;
     unsigned int nValue;
     bool nValueProvided;
     int numFiles, reverseOrder, rFlag, suppressHeaders;
-    long position, maxOffset;
-
 
     args = parse_arguments(argc, argv);
     
@@ -107,15 +104,11 @@ tail(int argc, char **argv, FILE *stream) {
             if (!suppressHeaders && numFiles > 1)
                 fprintf(stream, "==> %s <==\n", filename);
             if (reverseOrder == 0) {
-                position = ftell(fp);
-                fseek(fp, 0L, SEEK_END);
-                maxOffset = ftell(fp);
-                output = malloc(2 * maxOffset + 1);
-                fseek(fp, position, SEEK_SET);
-
-                write_buffer(fp, &output);
-                fprintf(stream, "%s", output);
-                free(output);
+                int c, i = 0;
+                while ((c = fgetc(fp)) != EOF) {
+                    fprintf(stream, "%c", c);
+                    i++;
+                }
             }
             if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
                 fprintf(stream, "\n");
