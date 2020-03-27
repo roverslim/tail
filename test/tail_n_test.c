@@ -1,7 +1,6 @@
 #include "tail_n.h"
 
 #include <time.h>
-
 #include "unity.h"
 
 void
@@ -13,7 +12,7 @@ test_assert_tail(
     FILE *fp;
     int status;
 
-    output = malloc(strlen(expectedOutput) + 1);
+    output = (char *) calloc(strlen(expectedOutput) + 1, sizeof(char));
     TEST_ASSERT_NOT_NULL(output);
 
     srand(time(0));
@@ -24,7 +23,7 @@ test_assert_tail(
     status = tail(argc, argv, fp);
 
     fseek(fp, 0L, SEEK_SET);
-    fread(output, strlen(expectedOutput) + 1, 1, fp);
+    fread(output, sizeof(char), strlen(expectedOutput) + 1, fp);
     fclose(fp);
     remove(testFilename);
 
@@ -66,6 +65,406 @@ line 9\n\
 line 10\n\
 line 11\n\
 line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_zero(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "0";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_zero(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-0";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_zero(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+0";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_one(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "1";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_one(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-1";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_one(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+1";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_two(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "2";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_two(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-2";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_two(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+2";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_eleven(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "11";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_eleven(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-11";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_eleven(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+11";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_twelve(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "12";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_twelve(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-12";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_twelve(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+12";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_thirteen(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "13";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_negative_thirteen(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "-13";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "\
+line 1\n\
+line 2\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+
+    test_assert_tail(0, expectedOutput, argc, argv);
+}
+
+void
+test_tail_when_n_is_positive_thirteen(void) {
+    char *argv0 = "tail";
+    char *argv1 = "-n";
+    char *argv2 = "+13";
+    char *argv3 = "test/data/short-sample.txt";
+    char *argv[] = {argv0, argv1, argv2, argv3};
+    int argc = 4;
+
+    char *expectedOutput;
+
+    expectedOutput = "";
 
     test_assert_tail(0, expectedOutput, argc, argv);
 }
@@ -278,6 +677,24 @@ main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_tail_when_file_does_not_exist);
     RUN_TEST(test_tail_with_default_arguments);
+    RUN_TEST(test_tail_when_n_is_zero);
+    RUN_TEST(test_tail_when_n_is_negative_zero);
+    RUN_TEST(test_tail_when_n_is_positive_zero);
+    RUN_TEST(test_tail_when_n_is_one);
+    RUN_TEST(test_tail_when_n_is_negative_one);
+    RUN_TEST(test_tail_when_n_is_positive_one);
+    RUN_TEST(test_tail_when_n_is_two);
+    RUN_TEST(test_tail_when_n_is_negative_two);
+    RUN_TEST(test_tail_when_n_is_positive_two);
+    RUN_TEST(test_tail_when_n_is_eleven);
+    RUN_TEST(test_tail_when_n_is_negative_eleven);
+    RUN_TEST(test_tail_when_n_is_positive_eleven);
+    RUN_TEST(test_tail_when_n_is_twelve);
+    RUN_TEST(test_tail_when_n_is_negative_twelve);
+    RUN_TEST(test_tail_when_n_is_positive_twelve);
+    RUN_TEST(test_tail_when_n_is_thirteen);
+    RUN_TEST(test_tail_when_n_is_negative_thirteen);
+    RUN_TEST(test_tail_when_n_is_positive_thirteen);
     RUN_TEST(test_tail_n_when_fp_is_null);
     RUN_TEST(test_tail_n_when_n_is_zero);
     RUN_TEST(test_tail_n_when_n_is_one);
