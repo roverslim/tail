@@ -84,8 +84,7 @@ set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int 
 */
 int
 tail_n(FILE *fp,
-        bool nValueProvided, unsigned int nValue, direction_t direction,
-        int reverseOrder) {
+        bool nValueProvided, unsigned int nValue, direction_t direction) {
     int origin, multiplier;
     long maxOffset;
 
@@ -127,8 +126,8 @@ tail(int argc, char **argv, FILE *stream) {
     char *filename;
     FILE *fp;
     unsigned int nValue;
-    bool nValueProvided;
-    int numFiles, reverseOrder, rFlag, suppressHeaders;
+    bool nValueProvided, reverseOrder;
+    int numFiles, suppressHeaders;
 
     args = parse_arguments(argc, argv);
     
@@ -137,7 +136,6 @@ tail(int argc, char **argv, FILE *stream) {
     nValue = arguments_get_n(args);
     nValueProvided = arguments_is_nValue_provided(args);
     reverseOrder = arguments_get_rFlag(args);
-    rFlag = arguments_get_rFlag(args);
     suppressHeaders = arguments_get_qFlag(args);
 
     for (int i = 0; (filename = arguments_get_files(args)[i]) != NULL; i++) {
@@ -148,10 +146,10 @@ tail(int argc, char **argv, FILE *stream) {
             return -1;
         }
 
-        if (reverseOrder == 1 && nValue != 0) {
+        if (reverseOrder && nValue != 0) {
             tail_r(fp, stream);
-        } else if (reverseOrder == 0) {
-            tail_n(fp, nValueProvided, nValue, direction, reverseOrder);
+        } else if (!reverseOrder) {
+            tail_n(fp, nValueProvided, nValue, direction);
 
             if (!suppressHeaders && numFiles > 1)
                 fprintf(stream, "==> %s <==\n", filename);

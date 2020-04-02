@@ -7,7 +7,7 @@ enum {
 struct flags {
     int f;
     int F;
-    int r;
+    bool r;
     int q;
 };
 
@@ -57,7 +57,7 @@ arguments_get_qFlag(arguments_t *args) {
     return args->flags.q;
 };
 
-int
+bool
 arguments_get_rFlag(arguments_t *args) {
     return args->flags.r;
 };
@@ -67,7 +67,7 @@ arguments_init(
     char **files, int numFiles,
     const char *b, const char *c, const char *n,
     direction_t ndirection,
-    int f, int F, int r, int q
+    int f, int F, bool r, int q
 ) {
     arguments_t *args;
 

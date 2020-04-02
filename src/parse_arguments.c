@@ -10,10 +10,11 @@
 arguments_t *
 parse_arguments(int argc, char **argv)
 {
+    bool rflag;
     char *bvalue, *cvalue, *nvalue;
     char **files;
     char *file;
-    int fflag, Fflag, rflag, qflag;
+    int fflag, Fflag, qflag;
     int c;
     int numFiles;
     arguments_t *args;
@@ -21,7 +22,8 @@ parse_arguments(int argc, char **argv)
 
     files = NULL;
     file = bvalue = cvalue = nvalue = NULL;
-    fflag = Fflag = rflag = qflag = 0;
+    fflag = Fflag = qflag = 0;
+    rflag = false;
     optind = 1; /* The caller can reset it to 1 to restart scanning of the same argv. (from http://man7.org/linux/man-pages/man3/getopt.3.html) */
     opterr = 0; /* Supress printing of error messages by getopt */
 
@@ -43,7 +45,7 @@ parse_arguments(int argc, char **argv)
                 nvalue = optarg;
                 break;
             case 'r':
-                rflag = 1;
+                rflag = true;
                 break;
             case 'q':
                 qflag = 1;

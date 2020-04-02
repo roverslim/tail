@@ -551,10 +551,10 @@ void
 test_tail_n_when_fp_is_null(void) {
     int exitCode;
 
-    exitCode = tail_n(NULL, true, 13, RELATIVE_TO_END, 0);
+    exitCode = tail_n(NULL, true, 13, RELATIVE_TO_END);
     TEST_ASSERT_EQUAL_INT(1, exitCode);
 
-    exitCode = tail_n(NULL, true, 13, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(NULL, true, 13, RELATIVE_TO_BEGINNING);
     TEST_ASSERT_EQUAL_INT(1, exitCode);
 }
 
@@ -569,7 +569,7 @@ test_tail_n_when_n_is_zero(void) {
 
     // tail -n 0 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -577,7 +577,7 @@ test_tail_n_when_n_is_zero(void) {
 
     // tail -n +0 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -595,7 +595,7 @@ test_tail_n_when_n_is_one(void) {
 
     // tail -n 1 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -603,7 +603,7 @@ test_tail_n_when_n_is_one(void) {
 
     // tail -n +1 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -621,7 +621,7 @@ test_tail_n_when_n_is_less_than_the_number_of_lines(void) {
 
     // tail -n 3 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -629,7 +629,7 @@ test_tail_n_when_n_is_less_than_the_number_of_lines(void) {
 
     // tail -n +3 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -647,7 +647,7 @@ test_tail_n_when_n_is_equal_to_the_number_of_lines(void) {
 
     // tail -n 12 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -655,7 +655,7 @@ test_tail_n_when_n_is_equal_to_the_number_of_lines(void) {
 
     // tail -n +12 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -673,7 +673,7 @@ test_tail_n_when_n_is_more_than_the_number_of_lines(void) {
 
     // tail -n 100 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -681,7 +681,7 @@ test_tail_n_when_n_is_more_than_the_number_of_lines(void) {
 
     // tail -n +100 test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING, 0);
+    exitCode = tail_n(fp, true, numLines, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -696,7 +696,7 @@ test_tail_n_when_input_file_is_empty(void) {
 
     // tail test/data/empty-file.txt
     fp = fopen("test/data/empty-file.txt", "r");
-    exitCode = tail_n(fp, false, 10, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, false, 10, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -704,7 +704,7 @@ test_tail_n_when_input_file_is_empty(void) {
 
     // tail -n 3 test/data/empty-file.txt
     fp = fopen("test/data/empty-file.txt", "r");
-    exitCode = tail_n(fp, true, 3, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, true, 3, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -712,15 +712,7 @@ test_tail_n_when_input_file_is_empty(void) {
 
     // tail -n +3 test/data/empty-file.txt
     fp = fopen("test/data/empty-file.txt", "r");
-    exitCode = tail_n(fp, true, 3, RELATIVE_TO_BEGINNING, 0);
-    filePosition = ftell(fp);
-    fclose(fp);
-    TEST_ASSERT_EQUAL_INT(0, exitCode);
-    TEST_ASSERT_EQUAL_INT(0, filePosition);
-
-    // tail -r test/data/empty-file.txt
-    fp = fopen("test/data/empty-file.txt", "r");
-    exitCode = tail_n(fp, false, 10, RELATIVE_TO_END, 1);
+    exitCode = tail_n(fp, true, 3, RELATIVE_TO_BEGINNING);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);
@@ -735,7 +727,7 @@ test_tail_n_when_n_is_not_specified(void) {
 
     // tail test/data/short-sample.txt
     fp = fopen("test/data/short-sample.txt", "r");
-    exitCode = tail_n(fp, false, 10, RELATIVE_TO_END, 0);
+    exitCode = tail_n(fp, false, 10, RELATIVE_TO_END);
     filePosition = ftell(fp);
     fclose(fp);
     TEST_ASSERT_EQUAL_INT(0, exitCode);

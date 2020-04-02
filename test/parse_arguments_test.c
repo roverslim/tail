@@ -13,7 +13,7 @@ test_rFlag_is_set(void) {
     char *argv[] = {argv0, argv1};
 
     args = parse_arguments(argc, argv);
-    TEST_ASSERT_EQUAL(1, arguments_get_rFlag(args));
+    TEST_ASSERT_EQUAL(true, arguments_get_rFlag(args));
 
     arguments_free(args);
 }
@@ -45,7 +45,7 @@ test_when_no_flags_are_set(void) {
     TEST_ASSERT_EQUAL(false, arguments_is_nValue_provided(args));
     TEST_ASSERT_EQUAL(10, arguments_get_n(args));
     TEST_ASSERT_EQUAL(0, arguments_get_qFlag(args));
-    TEST_ASSERT_EQUAL(0, arguments_get_rFlag(args));
+    TEST_ASSERT_EQUAL(false, arguments_get_rFlag(args));
 
     arguments_free(args);
 }
