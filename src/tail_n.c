@@ -8,6 +8,66 @@
 
 #define NEWLINE '\n'
 
+void
+print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
+    int c;
+
+    fseek(fp, fromOffset, SEEK_SET);
+
+    for (long i=0L; fromOffset + i < toOffset; i++) {
+        c = fgetc(fp);
+        fprintf(stream, "%c", c);
+    }
+}
+
+void
+tail_r(FILE *fp, FILE *stream) {
+    int c, i, lineCount;
+    long fromOffset, toOffset, maxOffset;
+
+    fseek(fp, 0L, SEEK_END);
+    maxOffset = toOffset = ftell(fp);
+
+    i = lineCount = 0;
+    for (int i=0; i <= maxOffset; i++) {
+        fseek(fp, maxOffset - i, SEEK_SET);
+        c = fgetc(fp);
+
+        if (maxOffset == i) {
+            print_string(fp, 0L, toOffset, stream);
+        } else if (NEWLINE == c) {
+            lineCount++;
+
+            fromOffset = ftell(fp);
+            print_string(fp, fromOffset, toOffset, stream);
+
+            // Set the last offset to the edge of what was just printed
+            toOffset = fromOffset;
+        }
+    }
+
+}
+
+void
+set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int origin) {
+    int c, newlines = 0;
+
+    for(long offset = 0; offset <= maxOffset; offset++) {
+        long o = multiplier * offset * sizeof(char);
+        fseek(fp, o, origin);
+
+        c = fgetc(fp);
+
+        if (NEWLINE == c)
+            newlines++;
+
+        if (newlines == nValue)
+            break;
+
+        ungetc(c, fp);
+    }
+}
+
 /*
     tail_n
 
@@ -26,7 +86,7 @@ int
 tail_n(FILE *fp,
         bool nValueProvided, unsigned int nValue, direction_t direction,
         int reverseOrder) {
-    int c, newlines, multiplier, origin;
+    int origin, multiplier;
     long maxOffset;
 
     if (fp == NULL)
@@ -41,6 +101,9 @@ tail_n(FILE *fp,
         return 0;
     }
 
+    fseek(fp, 0L, SEEK_END);
+    maxOffset = ftell(fp);
+
     if (RELATIVE_TO_END == direction) {
         multiplier = -1;
         nValue += 1;
@@ -52,22 +115,7 @@ tail_n(FILE *fp,
     } else
       return 1;
  
-    newlines = 0;
-    fseek(fp, 0L, SEEK_END);
-    maxOffset = ftell(fp);
-
-    for(long offset = 0; offset <= maxOffset; offset++) {
-        fseek(fp, multiplier * offset * sizeof(char), origin);
-
-        c = fgetc(fp);
-        if (NEWLINE == c)
-            newlines++;
-
-        if (!reverseOrder && (newlines == nValue))
-            break;
-
-        ungetc(c, fp);
-    }
+    set_pointer(fp, maxOffset, multiplier, nValue, origin);
 
     return 0;
 }
@@ -100,17 +148,20 @@ tail(int argc, char **argv, FILE *stream) {
             return -1;
         }
 
-        if (tail_n(fp, nValueProvided, nValue, direction, reverseOrder) == 0) {
+        if (reverseOrder == 1 && nValue != 0) {
+            tail_r(fp, stream);
+        } else if (reverseOrder == 0) {
+            tail_n(fp, nValueProvided, nValue, direction, reverseOrder);
 
             if (!suppressHeaders && numFiles > 1)
                 fprintf(stream, "==> %s <==\n", filename);
-            if (reverseOrder == 0) {
-                int c, i = 0;
-                while ((c = fgetc(fp)) != EOF) {
-                    fprintf(stream, "%c", c);
-                    i++;
-                }
+
+            int c, i = 0;
+            while ((c = fgetc(fp)) != EOF) {
+                fprintf(stream, "%c", c);
+                i++;
             }
+
             if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
                 fprintf(stream, "\n");
         }
