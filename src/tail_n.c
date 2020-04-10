@@ -148,7 +148,7 @@ tail(int argc, char **argv, FILE *stream) {
             return -1;
         }
 
-        if (reverseOrder && nValue != 0) { // TODO: remove nValue != 0
+        if (reverseOrder) {
             tail_r(fp, stream, nValueProvided, nValue, nDirection);
         } else if (!reverseOrder) {
             tail_n(fp, nValueProvided, nValue, nDirection);
