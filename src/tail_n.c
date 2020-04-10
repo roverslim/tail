@@ -21,15 +21,18 @@ print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
 }
 
 void
-tail_r(FILE *fp, FILE *stream) {
+tail_r(FILE *fp, FILE *stream, bool nValueProvided, unsigned int nValue, direction_t nDirection) {
     int c, i, lineCount;
     long fromOffset, toOffset, maxOffset;
 
     fseek(fp, 0L, SEEK_END);
     maxOffset = toOffset = ftell(fp);
 
+    if (nDirection == RELATIVE_TO_BEGINNING)
+        nValue--;
+
     i = lineCount = 0;
-    for (int i=0; i <= maxOffset; i++) {
+    for (int i=0; i <= maxOffset && ((nValueProvided && lineCount <= nValue) || !nValueProvided); i++) {
         fseek(fp, maxOffset - i, SEEK_SET);
         c = fgetc(fp);
 
@@ -45,7 +48,6 @@ tail_r(FILE *fp, FILE *stream) {
             toOffset = fromOffset;
         }
     }
-
 }
 
 void
@@ -84,7 +86,7 @@ set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int 
 */
 int
 tail_n(FILE *fp,
-        bool nValueProvided, unsigned int nValue, direction_t direction) {
+        bool nValueProvided, unsigned int nValue, direction_t nDirection) {
     int origin, multiplier;
     long maxOffset;
 
@@ -92,10 +94,10 @@ tail_n(FILE *fp,
         return 1;
 
     if (nValue == 0) {
-        if (RELATIVE_TO_END == direction)
+        if (RELATIVE_TO_END == nDirection)
             fseek(fp, 0L, SEEK_END);
         return 0;
-    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == direction) {
+    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == nDirection) {
         fseek(fp, 0L, SEEK_SET);
         return 0;
     }
@@ -103,11 +105,11 @@ tail_n(FILE *fp,
     fseek(fp, 0L, SEEK_END);
     maxOffset = ftell(fp);
 
-    if (RELATIVE_TO_END == direction) {
+    if (RELATIVE_TO_END == nDirection) {
         multiplier = -1;
         nValue += 1;
         origin = SEEK_END;
-    } else if (RELATIVE_TO_BEGINNING == direction) {
+    } else if (RELATIVE_TO_BEGINNING == nDirection) {
         multiplier = 1;
         nValue -= 1;
         origin = SEEK_SET;
@@ -122,7 +124,7 @@ tail_n(FILE *fp,
 int
 tail(int argc, char **argv, FILE *stream) {
     arguments_t *args;
-    direction_t direction;
+    direction_t nDirection;
     char *filename;
     FILE *fp;
     unsigned int nValue;
@@ -131,7 +133,7 @@ tail(int argc, char **argv, FILE *stream) {
 
     args = parse_arguments(argc, argv);
     
-    direction = arguments_get_ndirection(args);
+    nDirection = arguments_get_ndirection(args);
     numFiles = arguments_get_numFiles(args);
     nValue = arguments_get_n(args);
     nValueProvided = arguments_is_nValue_provided(args);
@@ -146,10 +148,10 @@ tail(int argc, char **argv, FILE *stream) {
             return -1;
         }
 
-        if (reverseOrder && nValue != 0) {
-            tail_r(fp, stream);
+        if (reverseOrder && nValue != 0) { // TODO: remove nValue != 0
+            tail_r(fp, stream, nValueProvided, nValue, nDirection);
         } else if (!reverseOrder) {
-            tail_n(fp, nValueProvided, nValue, direction);
+            tail_n(fp, nValueProvided, nValue, nDirection);
 
             if (!suppressHeaders && numFiles > 1)
                 fprintf(stream, "==> %s <==\n", filename);
