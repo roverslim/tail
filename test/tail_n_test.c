@@ -149,6 +149,75 @@ line 1\n";
 }
 
 void
+test_tail_when_q_is_set_with_a_single_input_file(void) {
+    char *command, *expected_output;
+    int expected_status;
+
+    command = "tail -q test/data/short-sample.txt";
+    expected_output = "\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+    expected_status = 0;
+
+    test_assert_tail(expected_status, expected_output, command);
+}
+
+void
+test_tail_with_default_arguments_and_multiple_input_files(void) {
+    char *command, *expected_output;
+    int expected_status;
+
+    command = "tail test/data/short-sample.txt test/data/empty-file.txt";
+    expected_output = "\
+==> test/data/short-sample.txt <==\n\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n\
+\n\
+==> test/data/empty-file.txt <==\n";
+    expected_status = 0;
+
+    test_assert_tail(expected_status, expected_output, command);
+}
+
+void
+test_tail_when_q_is_set_with_multiple_input_files(void) {
+    char *command, *expected_output;
+    int expected_status;
+
+    command = "tail -q test/data/short-sample.txt test/data/empty-file.txt";
+    expected_output = "\
+line 3\n\
+line 4\n\
+line 5\n\
+line 6\n\
+line 7\n\
+line 8\n\
+line 9\n\
+line 10\n\
+line 11\n\
+line 12\n";
+    expected_status = 0;
+
+    test_assert_tail(expected_status, expected_output, command);
+}
+
+void
 test_tail_when_n_is_zero(void) {
     char *command, *expected_output;
     int expected_status;
@@ -1005,6 +1074,9 @@ main(void) {
     RUN_TEST(test_tail_when_file_does_not_exist);
     RUN_TEST(test_tail_with_default_arguments);
     RUN_TEST(test_tail_when_r_is_set);
+    RUN_TEST(test_tail_when_q_is_set_with_a_single_input_file);
+    RUN_TEST(test_tail_with_default_arguments_and_multiple_input_files);
+    RUN_TEST(test_tail_when_q_is_set_with_multiple_input_files);
     RUN_TEST(test_tail_when_n_is_zero);
     RUN_TEST(test_tail_when_n_is_zero_and_r_is_set);
     RUN_TEST(test_tail_when_n_is_negative_zero);

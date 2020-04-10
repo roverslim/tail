@@ -148,23 +148,22 @@ tail(int argc, char **argv, FILE *stream) {
             return -1;
         }
 
+        if (!suppressHeaders && numFiles > 1)
+            fprintf(stream, "==> %s <==\n", filename);
         if (reverseOrder) {
             tail_r(fp, stream, nValueProvided, nValue, nDirection);
         } else if (!reverseOrder) {
             tail_n(fp, nValueProvided, nValue, nDirection);
-
-            if (!suppressHeaders && numFiles > 1)
-                fprintf(stream, "==> %s <==\n", filename);
 
             int c, i = 0;
             while ((c = fgetc(fp)) != EOF) {
                 fprintf(stream, "%c", c);
                 i++;
             }
-
-            if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
-                fprintf(stream, "\n");
         }
+        if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
+            fprintf(stream, "\n");
+
         fclose(fp);
     }
 
