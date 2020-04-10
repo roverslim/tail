@@ -38,7 +38,15 @@ tail_r(
         nValue--;
 
     i = lineCount = 0;
-    for (int i=0; i <= maxOffset && ((nValueProvided && lineCount <= nValue) || !nValueProvided); i++) {
+    for (
+        int i=0;
+        i <= maxOffset &&
+        (
+            (nValueProvided && lineCount <= nValue) ||
+            !nValueProvided
+        );
+        i++
+    ) {
         fseek(fp, maxOffset - i, SEEK_SET);
         c = fgetc(fp);
 
