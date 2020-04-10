@@ -28,6 +28,9 @@ tail_r(
     int c, i, lineCount;
     long fromOffset, toOffset, maxOffset;
 
+    if (NULL == fp || NULL == stream)
+        return;
+
     fseek(fp, 0L, SEEK_END);
     maxOffset = toOffset = ftell(fp);
 
@@ -81,7 +84,7 @@ tail_n(
     int origin, multiplier;
     long maxOffset;
 
-    if (fp == NULL)
+    if (NULL == fp || NULL == stream)
         return 1;
 
     fseek(fp, 0L, SEEK_END);
