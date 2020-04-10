@@ -84,17 +84,17 @@ tail_n(
     if (fp == NULL)
         return 1;
 
-    if (nValue == 0) {
-        if (RELATIVE_TO_END == nDirection)
-            fseek(fp, 0L, SEEK_END);
-        return 0;
-    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == nDirection) {
-        fseek(fp, 0L, SEEK_SET);
-        return 0;
-    }
-
     fseek(fp, 0L, SEEK_END);
     maxOffset = ftell(fp);
+
+    if (nValue == 0) {
+        if (RELATIVE_TO_BEGINNING == nDirection)
+            print_string(fp, 0L, maxOffset, stream);
+        return 0;
+    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == nDirection) {
+        print_string(fp, 0L, maxOffset, stream);
+        return 0;
+    }
 
     if (RELATIVE_TO_END == nDirection) {
         multiplier = -1;
@@ -108,6 +108,7 @@ tail_n(
       return 1;
  
     set_pointer(fp, maxOffset, multiplier, nValue, origin);
+    print_string(fp, ftell(fp), maxOffset, stream);
 
     return 0;
 }
@@ -141,17 +142,12 @@ tail(int argc, char **argv, FILE *stream) {
 
         if (!suppressHeaders && numFiles > 1)
             fprintf(stream, "==> %s <==\n", filename);
-        if (reverseOrder) {
+
+        if (reverseOrder)
             tail_r(fp, stream, nValueProvided, nValue, nDirection);
-        } else if (!reverseOrder) {
+        else
             tail_n(fp, stream, nValueProvided, nValue, nDirection);
 
-            int c, i = 0;
-            while ((c = fgetc(fp)) != EOF) {
-                fprintf(stream, "%c", c);
-                i++;
-            }
-        }
         if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
             fprintf(stream, "\n");
 
