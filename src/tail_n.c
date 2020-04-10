@@ -8,7 +8,7 @@
 
 #define NEWLINE '\n'
 
-void
+static void
 print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
     int c;
 
@@ -20,8 +20,11 @@ print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
     }
 }
 
-void
-tail_r(FILE *fp, FILE *stream, bool nValueProvided, unsigned int nValue, direction_t nDirection) {
+static void
+tail_r(
+  FILE *fp, FILE *stream,
+  bool nValueProvided, unsigned int nValue, direction_t nDirection
+) {
     int c, i, lineCount;
     long fromOffset, toOffset, maxOffset;
 
@@ -50,7 +53,7 @@ tail_r(FILE *fp, FILE *stream, bool nValueProvided, unsigned int nValue, directi
     }
 }
 
-void
+static void
 set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int origin) {
     int c, newlines = 0;
 
@@ -70,23 +73,11 @@ set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int 
     }
 }
 
-/*
-    tail_n
-
-    Sets the file position indicator for the file stream stream to the Nth-last line break.
-
-    When the input is seekable:
-        1- go to the end of the file stream (or start from the beginning),
-        2- read the preceeding char (if there is one),
-        3- find out it it's a line break,
-        4- repeat steps 2 & 3 until N line breaks are found
-
-    **Return value**
-    `0` upon success. Non-zero value otherwise.
-*/
-int
-tail_n(FILE *fp,
-        bool nValueProvided, unsigned int nValue, direction_t nDirection) {
+static int
+tail_n(
+  FILE *fp, FILE *stream,
+  bool nValueProvided, unsigned int nValue, direction_t nDirection
+) {
     int origin, multiplier;
     long maxOffset;
 
@@ -153,7 +144,7 @@ tail(int argc, char **argv, FILE *stream) {
         if (reverseOrder) {
             tail_r(fp, stream, nValueProvided, nValue, nDirection);
         } else if (!reverseOrder) {
-            tail_n(fp, nValueProvided, nValue, nDirection);
+            tail_n(fp, stream, nValueProvided, nValue, nDirection);
 
             int c, i = 0;
             while ((c = fgetc(fp)) != EOF) {
