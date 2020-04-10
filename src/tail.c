@@ -76,7 +76,7 @@ set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int 
     }
 }
 
-static int
+static void
 tail_n(
   FILE *fp, FILE *stream,
   bool nValueProvided, unsigned int nValue, direction_t nDirection
@@ -85,7 +85,7 @@ tail_n(
     long maxOffset;
 
     if (NULL == fp || NULL == stream)
-        return 1;
+        return;
 
     fseek(fp, 0L, SEEK_END);
     maxOffset = ftell(fp);
@@ -93,10 +93,10 @@ tail_n(
     if (nValue == 0) {
         if (RELATIVE_TO_BEGINNING == nDirection)
             print_string(fp, 0L, maxOffset, stream);
-        return 0;
+        return;
     } else if (nValue == 1 && RELATIVE_TO_BEGINNING == nDirection) {
         print_string(fp, 0L, maxOffset, stream);
-        return 0;
+        return;
     }
 
     if (RELATIVE_TO_END == nDirection) {
@@ -108,12 +108,12 @@ tail_n(
         nValue -= 1;
         origin = SEEK_SET;
     } else
-      return 1;
+      return;
  
     set_pointer(fp, maxOffset, multiplier, nValue, origin);
     print_string(fp, ftell(fp), maxOffset, stream);
 
-    return 0;
+    return;
 }
 
 int
