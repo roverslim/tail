@@ -1,4 +1,4 @@
-#include "tail_n.h"
+#include "tail.h"
 
 int
 main(int argc, char **argv) {

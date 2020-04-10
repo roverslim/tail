@@ -1,4 +1,4 @@
-#include "tail_n.h"
+#include "tail.h"
 
 #include <stdio.h>
 #include <stdlib.h>

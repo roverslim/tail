@@ -1,4 +1,4 @@
-#include "tail.h"
+#include "types.h"
 
 unsigned int arguments_get_n(arguments_t *args);
 bool arguments_is_nValue_provided(arguments_t *args);
