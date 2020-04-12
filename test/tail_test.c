@@ -295,19 +295,7 @@ test_tail_when_n_is_positive_zero_and_r_is_set(void) {
     int expected_status;
 
     command = "tail -n +0 -r test/data/short-sample.txt";
-    expected_output = "\
-line 12\n\
-line 11\n\
-line 10\n\
-line 9\n\
-line 8\n\
-line 7\n\
-line 6\n\
-line 5\n\
-line 4\n\
-line 3\n\
-line 2\n\
-line 1\n";
+    expected_output = "";
     expected_status = 0;
 
     test_assert_tail(expected_status, expected_output, command);

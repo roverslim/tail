@@ -21,12 +21,13 @@ print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
 }
 
 static void
-tail_r(
+tail_inner(
   FILE *fp, FILE *stream,
-  bool nValueProvided, unsigned int nValue, direction_t nDirection
+  bool nValueProvided, unsigned int nValue, direction_t nDirection,
+  bool rFlag
 ) {
     int c, i, lineCount;
-    long fromOffset, toOffset, maxOffset;
+    long fromOffset, toOffset, maxOffset, position;
 
     if (NULL == fp || NULL == stream)
         return;
@@ -34,12 +35,14 @@ tail_r(
     fseek(fp, 0L, SEEK_END);
     maxOffset = toOffset = ftell(fp);
 
-    if (nDirection == RELATIVE_TO_BEGINNING)
+    if (RELATIVE_TO_BEGINNING == nDirection && 0 != nValue)
         nValue--;
+    else if (!rFlag && RELATIVE_TO_END == nDirection)
+        nValue++;
 
     i = lineCount = 0;
     for (
-        int i=0;
+        long i=0L;
         i <= maxOffset &&
         (
             (nValueProvided && lineCount <= nValue) ||
@@ -47,81 +50,45 @@ tail_r(
         );
         i++
     ) {
-        fseek(fp, maxOffset - i, SEEK_SET);
+        if (!rFlag && RELATIVE_TO_BEGINNING == nDirection)
+            position = i;
+        else
+            position = maxOffset - i;
+        fseek(fp, position, SEEK_SET);
         c = fgetc(fp);
 
         if (maxOffset == i) {
-            print_string(fp, 0L, toOffset, stream);
+            /*
+             * Print everything once we scan the entire file without
+             *  finding the number of lines requested.
+             */
+            if (rFlag)
+                print_string(fp, 0L, fromOffset, stream);
+            else if (RELATIVE_TO_END == nDirection || (RELATIVE_TO_BEGINNING == nDirection && nValue < lineCount))
+                print_string(fp, 0L, maxOffset, stream);
+        } else if (!rFlag && nValue == lineCount) {
+            if (0 == nValue)
+                print_string(fp, 0L, maxOffset, stream);
+            else
+                print_string(fp, fromOffset, maxOffset, stream);
+            break;
         } else if (NEWLINE == c) {
             lineCount++;
-
             fromOffset = ftell(fp);
-            print_string(fp, fromOffset, toOffset, stream);
 
-            // Set the last offset to the edge of what was just printed
+            /*
+             * Print line and continue when rFlag is set.
+             *  This has the effect of printing lines in reverse.
+             */
+            if (rFlag)
+                print_string(fp, fromOffset, toOffset, stream);
+
+            /*
+             * Setting the next stopgap to the beginning of the current line
+             */
             toOffset = fromOffset;
         }
     }
-}
-
-static void
-set_pointer(FILE *fp, long  maxOffset, int multiplier, unsigned int nValue, int origin) {
-    int c, newlines = 0;
-
-    for(long offset = 0; offset <= maxOffset; offset++) {
-        long o = multiplier * offset * sizeof(char);
-        fseek(fp, o, origin);
-
-        c = fgetc(fp);
-
-        if (NEWLINE == c)
-            newlines++;
-
-        if (newlines == nValue)
-            break;
-
-        ungetc(c, fp);
-    }
-}
-
-static void
-tail_n(
-  FILE *fp, FILE *stream,
-  bool nValueProvided, unsigned int nValue, direction_t nDirection
-) {
-    int origin, multiplier;
-    long maxOffset;
-
-    if (NULL == fp || NULL == stream)
-        return;
-
-    fseek(fp, 0L, SEEK_END);
-    maxOffset = ftell(fp);
-
-    if (nValue == 0) {
-        if (RELATIVE_TO_BEGINNING == nDirection)
-            print_string(fp, 0L, maxOffset, stream);
-        return;
-    } else if (nValue == 1 && RELATIVE_TO_BEGINNING == nDirection) {
-        print_string(fp, 0L, maxOffset, stream);
-        return;
-    }
-
-    if (RELATIVE_TO_END == nDirection) {
-        multiplier = -1;
-        nValue += 1;
-        origin = SEEK_END;
-    } else if (RELATIVE_TO_BEGINNING == nDirection) {
-        multiplier = 1;
-        nValue -= 1;
-        origin = SEEK_SET;
-    } else
-      return;
- 
-    set_pointer(fp, maxOffset, multiplier, nValue, origin);
-    print_string(fp, ftell(fp), maxOffset, stream);
-
-    return;
 }
 
 int
@@ -154,10 +121,7 @@ tail(int argc, char **argv, FILE *stream) {
         if (!suppressHeaders && numFiles > 1)
             fprintf(stream, "==> %s <==\n", filename);
 
-        if (reverseOrder)
-            tail_r(fp, stream, nValueProvided, nValue, nDirection);
-        else
-            tail_n(fp, stream, nValueProvided, nValue, nDirection);
+        tail_inner(fp, stream, nValueProvided, nValue, nDirection, reverseOrder);
 
         if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
             fprintf(stream, "\n");
