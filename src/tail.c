@@ -21,12 +21,10 @@ print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
 }
 
 static void
-tail_inner(
-  FILE *fp, FILE *stream,
-  bool nValueProvided, unsigned int nValue, direction_t nDirection,
-  bool rFlag
-) {
-    int c, i, lineCount;
+parse_file(FILE *fp, FILE *stream, arguments_t *args) {
+    bool nValueProvided, rFlag;
+    direction_t nDirection;
+    int c, i, lineCount, nValue;
     long fromOffset, toOffset, maxOffset, position;
 
     if (NULL == fp || NULL == stream)
@@ -34,6 +32,11 @@ tail_inner(
 
     fseek(fp, 0L, SEEK_END);
     maxOffset = toOffset = ftell(fp);
+
+    nDirection = arguments_get_ndirection(args);
+    nValue = arguments_get_n(args);
+    nValueProvided = arguments_is_nValue_provided(args);
+    rFlag = arguments_get_rFlag(args);
 
     if (RELATIVE_TO_BEGINNING == nDirection && 0 != nValue)
         nValue--;
@@ -94,20 +97,12 @@ tail_inner(
 int
 tail(int argc, char **argv, FILE *stream) {
     arguments_t *args;
-    direction_t nDirection;
     char *filename;
     FILE *fp;
-    unsigned int nValue;
-    bool nValueProvided, reverseOrder;
     int numFiles, suppressHeaders;
 
     args = parse_arguments(argc, argv);
-    
-    nDirection = arguments_get_ndirection(args);
     numFiles = arguments_get_numFiles(args);
-    nValue = arguments_get_n(args);
-    nValueProvided = arguments_is_nValue_provided(args);
-    reverseOrder = arguments_get_rFlag(args);
     suppressHeaders = arguments_get_qFlag(args);
 
     for (int i = 0; (filename = arguments_get_files(args)[i]) != NULL; i++) {
@@ -121,7 +116,7 @@ tail(int argc, char **argv, FILE *stream) {
         if (!suppressHeaders && numFiles > 1)
             fprintf(stream, "==> %s <==\n", filename);
 
-        tail_inner(fp, stream, nValueProvided, nValue, nDirection, reverseOrder);
+        parse_file(fp, stream, args);
 
         if (!suppressHeaders && i + 1 < numFiles && numFiles > 1)
             fprintf(stream, "\n");
