@@ -20,77 +20,117 @@ print_string(FILE *fp, long fromOffset, long toOffset, FILE *stream) {
     }
 }
 
-static void
-parse_file(FILE *fp, FILE *stream, arguments_t *args) {
+static bool
+terminate(
+    FILE *fp, FILE *stream, arguments_t *args,
+    long numLinesWanted, int lineCount,
+    long iteration, long fromOffset, long maxOffset
+) {
     bool nValueProvided, rFlag;
     direction_t nDirection;
-    int c, i, lineCount, nValue;
-    long fromOffset, toOffset, maxOffset, position;
+
+    nDirection = arguments_get_ndirection(args);
+    nValueProvided = arguments_is_nValue_provided(args);
+    rFlag = arguments_get_rFlag(args);
+
+    if (maxOffset == iteration) {
+        if (rFlag) {
+            /*
+             * We've gone through the entire file, printing each line in reverse. We have yet to output the first
+             *    line of the file.
+             */
+            print_string(fp, 0L, fromOffset, stream);
+        } else if (RELATIVE_TO_END == nDirection) {
+            /*
+             * Parsing from the end, we walked through the entire file not finding the number of lines requested.
+             *    This results in printing out everything.
+             */
+            print_string(fp, 0L, maxOffset, stream);
+        }
+
+        return true;
+    } else if (!rFlag && numLinesWanted == lineCount) {
+        if (0 == numLinesWanted)
+            print_string(fp, 0L, maxOffset, stream);
+        else
+            print_string(fp, fromOffset, maxOffset, stream);
+
+        return true;
+    } else if (nValueProvided && !(nValueProvided && lineCount <= numLinesWanted))
+        return true;
+
+    return false;
+}
+
+static void
+set_cursor_position(FILE *fp, long iteration, long maxOffset, direction_t nDirection, bool rFlag) {
+    long position;
+
+    if (!rFlag && RELATIVE_TO_BEGINNING == nDirection)
+        position = iteration;
+    else
+        position = maxOffset - iteration;
+
+    fseek(fp, position, SEEK_SET);
+}
+
+static long
+determine_num_lines_wanted(arguments_t *args) {
+    bool rFlag;
+    direction_t nDirection;
+    long numLinesWanted;
+
+    nDirection = arguments_get_ndirection(args);
+    numLinesWanted = arguments_get_n(args);
+    rFlag = arguments_get_rFlag(args);
+
+    if (RELATIVE_TO_BEGINNING == nDirection && 0 != numLinesWanted)
+        numLinesWanted--;
+    else if (!rFlag && RELATIVE_TO_END == nDirection)
+        numLinesWanted++;
+
+    return numLinesWanted;
+}
+
+static void
+parse_file(FILE *fp, FILE *stream, arguments_t *args) {
+    bool rFlag;
+    direction_t nDirection;
+    int c, lineCount;
+    long numLinesWanted, fromOffset, toOffset, maxOffset;
 
     if (NULL == fp || NULL == stream)
         return;
 
-    fseek(fp, 0L, SEEK_END);
+    fromOffset = 0L;
+    fseek(fp, fromOffset, SEEK_END);
     maxOffset = toOffset = ftell(fp);
 
     nDirection = arguments_get_ndirection(args);
-    nValue = arguments_get_n(args);
-    nValueProvided = arguments_is_nValue_provided(args);
     rFlag = arguments_get_rFlag(args);
 
-    if (RELATIVE_TO_BEGINNING == nDirection && 0 != nValue)
-        nValue--;
-    else if (!rFlag && RELATIVE_TO_END == nDirection)
-        nValue++;
-
-    i = lineCount = 0;
-    for (
-        long i=0L;
-        i <= maxOffset &&
-        (
-            (nValueProvided && lineCount <= nValue) ||
-            !nValueProvided
-        );
-        i++
-    ) {
-        if (!rFlag && RELATIVE_TO_BEGINNING == nDirection)
-            position = i;
-        else
-            position = maxOffset - i;
-        fseek(fp, position, SEEK_SET);
+    lineCount = 0;
+    numLinesWanted = determine_num_lines_wanted(args);
+    for (long i=0L; i <= maxOffset; i++) {
+        set_cursor_position(fp, i, maxOffset, nDirection, rFlag);
         c = fgetc(fp);
 
-        if (maxOffset == i) {
-            /*
-             * Print everything once we scan the entire file without
-             *  finding the number of lines requested.
-             */
-            if (rFlag)
-                print_string(fp, 0L, fromOffset, stream);
-            else if (RELATIVE_TO_END == nDirection || (RELATIVE_TO_BEGINNING == nDirection && nValue < lineCount))
-                print_string(fp, 0L, maxOffset, stream);
-        } else if (!rFlag && nValue == lineCount) {
-            if (0 == nValue)
-                print_string(fp, 0L, maxOffset, stream);
-            else
-                print_string(fp, fromOffset, maxOffset, stream);
-            break;
-        } else if (NEWLINE == c) {
+        if (NEWLINE == c) {
             lineCount++;
             fromOffset = ftell(fp);
 
             /*
              * Print line and continue when rFlag is set.
-             *  This has the effect of printing lines in reverse.
+             *    This has the effect of printing lines in reverse.
              */
-            if (rFlag)
-                print_string(fp, fromOffset, toOffset, stream);
+            if (rFlag) print_string(fp, fromOffset, toOffset, stream);
 
             /*
              * Setting the next stopgap to the beginning of the current line
              */
             toOffset = fromOffset;
-        }
+        } else if (terminate(fp, stream, args, numLinesWanted, lineCount, i, fromOffset, maxOffset))
+            break;
     }
 }
 
