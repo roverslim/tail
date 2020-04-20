@@ -97,7 +97,7 @@ test_tail_when_file_does_not_exist(void) {
 
     command = "tail no-such-file";
     expected_output = "tail: no-such-file: No such file or directory\n";
-    expected_status = -1;
+    expected_status = 1;
 
     test_assert_tail(expected_status, expected_output, command);
 }
