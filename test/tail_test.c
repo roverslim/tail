@@ -103,6 +103,18 @@ test_tail_when_file_does_not_exist(void) {
 }
 
 void
+test_tail_when_file_is_empty(void) {
+    char *command, *expected_output;
+    int expected_status;
+
+    command = "tail test/data/empty-file.txt";
+    expected_output = "";
+    expected_status = 0;
+
+    test_assert_tail(expected_status, expected_output, command);
+}
+
+void
 test_tail_with_default_arguments(void) {
     char *command, *expected_output;
     int expected_status;
@@ -873,6 +885,7 @@ int
 main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_tail_when_file_does_not_exist);
+    RUN_TEST(test_tail_when_file_is_empty);
     RUN_TEST(test_tail_with_default_arguments);
     RUN_TEST(test_tail_when_r_is_set);
     RUN_TEST(test_tail_when_q_is_set_with_a_single_input_file);
